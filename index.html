@@ -106,7 +106,13 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:13px}
 <br><button class="primary" onclick="createLesson()">Save lesson</button>
 <p id="teacherMessage" class="muted"></p>
 </section>
-</section>
+<section id="results" class="card hidden">
+
+  <h2>Student Results</h2>
+
+  <div id="resultsList">Loading results...</div>
+
+</section></section>
 </main>
 <footer>KAMILA ENGLISH SCHOOL · Learn with confidence</footer>
 
@@ -178,6 +184,8 @@ async function loadApp(user){
   "Welcome, "+user.email+" · "+currentRole;
  if(currentRole==="teacher")
   document.getElementById("teacherTab").classList.remove("hidden");
+  if(currentRole==="teacher")
+ document.getElementById("resultsTab").classList.remove("hidden");
  await loadLessons();
 }
 
@@ -262,7 +270,43 @@ async function checkGaps(gaps){
  alert(error?result+" (Result could not be saved: "+error.message+")":result+" — saved!");
 }
 
-async function createLesson(){
+
+ 
+
+  async function loadResults(){
+  const area = document.getElementById("resultsList");
+  area.textContent = "Loading results...";
+
+  const {data, error} = await db
+    .from("results")
+    .select("student_id, lesson_id, exercise, score, total, created_at")
+    .order("created_at", {ascending:false});
+
+  if(error){
+    area.textContent = error.message;
+    return;
+  }
+
+  if(!data.length){
+    area.textContent = "No results yet.";
+    return;
+  }
+
+  area.innerHTML = "";
+
+  data.forEach(r=>{
+    const item = document.createElement("div");
+    item.className = "word";
+    item.textContent =
+      "Student ID: " + r.student_id +
+      " | Lesson ID: " + r.lesson_id +
+      " | " + r.exercise +
+      " | Score: " + r.score + "/" + r.total +
+      " | " + new Date(r.created_at).toLocaleString();
+    area.appendChild(item);
+  });
+}
+ async function createLesson(){
  const words=document.getElementById("lessonWords").value.split("\n")
  .map(line=>line.trim()).filter(Boolean).map(line=>{
   const parts=line.split("=");
