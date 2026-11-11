@@ -274,7 +274,7 @@ async function checkGaps(gaps){
 
  
 
-  async function loadResults(){
+ async function loadResults(){
   const area = document.getElementById("resultsList");
   area.textContent = "Loading results...";
 
@@ -293,17 +293,44 @@ async function checkGaps(gaps){
     return;
   }
 
+  const studentIds = [...new Set(data.map(r=>r.student_id))];
+  const lessonIds = [...new Set(data.map(r=>r.lesson_id))];
+
+  const {data: students, error: studentError} = await db
+    .from("profiles")
+    .select("id, full_name, email")
+    .in("id", studentIds);
+
+  if(studentError){
+    area.textContent = studentError.message;
+    return;
+  }
+
+  const {data: lessons, error: lessonError} = await db
+    .from("lessons")
+    .select("id, title")
+    .in("id", lessonIds);
+
+  if(lessonError){
+    area.textContent = lessonError.message;
+    return;
+  }
+
   area.innerHTML = "";
 
   data.forEach(r=>{
+    const student = students.find(s=>s.id===r.student_id);
+    const lesson = lessons.find(l=>l.id===r.lesson_id);
+
     const item = document.createElement("div");
     item.className = "word";
     item.textContent =
-      "Student ID: " + r.student_id +
-      " | Lesson ID: " + r.lesson_id +
-      " | " + r.exercise +
+      "Student: " + (student?.full_name || student?.email || "Unknown") +
+      " | Lesson: " + (lesson?.title || "Unknown") +
+      " | Exercise: " + r.exercise +
       " | Score: " + r.score + "/" + r.total +
       " | " + new Date(r.created_at).toLocaleString();
+
     area.appendChild(item);
   });
 }
