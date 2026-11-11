@@ -128,14 +128,39 @@ async function signIn(){
 }
 
 async function signUp(){
- const {data,error}=await db.auth.signUp({
-  email:email.value.trim(),password:password.value
- });
- if(error){message("authMessage",error.message);return;}
- if(data.session) await loadApp(data.user);
- else message("authMessage","Account created. Check your email to confirm registration.");
-}
+  const emailValue = document.getElementById("email").value.trim();
+  const passwordValue = document.getElementById("password").value;
 
+  if (!emailValue || !passwordValue) {
+    message("authMessage", "Enter your email and password.");
+    return;
+  }
+
+  if (passwordValue.length < 6) {
+    message("authMessage", "Password must be at least 6 characters.");
+    return;
+  }
+
+  try {
+    const { data, error } = await db.auth.signUp({
+      email: emailValue,
+      password: passwordValue
+    });
+
+    if (error) {
+      message("authMessage", error.message);
+      return;
+    }
+
+    if (data.session) {
+      await loadApp(data.user);
+    } else {
+      message("authMessage", "Account created. Check your email to confirm registration.");
+    }
+  } catch (err) {
+    message("authMessage", err.message || "Registration failed.");
+  }
+}
 async function signOut(){
  await db.auth.signOut();
  location.reload();
