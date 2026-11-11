@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAMILA ENGLISH SCHOOL</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --blue:#dceafa; --sage:#dce9df; --navy:#263b50;
+  --cream:#fbfcfa; --muted:#718096; --white:#fff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--navy);
+font-family:Arial,sans-serif}
+header{padding:24px 18px;background:white;border-bottom:1px solid #e8eee9}
+h1{font-family:Georgia,serif;font-size:25px;margin:0}
+header p{color:var(--muted);margin:7px 0 0}
+main{max-width:850px;margin:25px auto;padding:0 16px}
+.card{background:white;border:1px solid #e7ece8;border-radius:18px;
+padding:20px;margin:15px 0;box-shadow:0 3px 12px #263b5008}
+h2{font-family:Georgia,serif}
+input,textarea,select{width:100%;padding:13px;margin:7px 0 14px;
+border:1px solid #dce4e1;border-radius:10px;font:16px Arial;background:white}
+textarea{min-height:110px;resize:vertical}
+button{border:0;border-radius:10px;padding:12px 17px;
+background:var(--sage);color:var(--navy);font-size:15px;
+font-weight:600;margin:4px;cursor:pointer}
+button.primary{background:var(--navy);color:white}
+button:disabled{opacity:.5}
+nav{display:flex;gap:7px;flex-wrap:wrap;margin:18px 0}
+nav button.active{background:var(--navy);color:white}
+.muted{color:var(--muted);font-size:14px}
+.hidden{display:none!important}
+.word{padding:10px;background:#f1f6f3;border-radius:9px;margin:7px 0}
+.story{white-space:pre-wrap;line-height:1.8;font-size:17px}
+.notice{padding:12px;background:var(--blue);border-radius:10px}
+footer{text-align:center;padding:30px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<header>
+<h1>KAMILA ENGLISH SCHOOL</h1>
+<p>Learn English at your own pace ✨</p>
+</header>
+<main>
+<section id="auth" class="card">
+<h2>Welcome!</h2>
+<p class="muted">Sign in or create your student account.</p>
+<input id="email" type="email" placeholder="Email address">
+<input id="password" type="password" placeholder="Password">
+<button class="primary" onclick="signIn()">Sign in</button>
+<button onclick="signUp()">Create account</button>
+<p id="authMessage" class="muted"></p>
+</section>
+
+<section id="app" class="hidden">
+<div class="card">
+<p id="welcome">Welcome!</p>
+<button onclick="signOut()">Sign out</button>
+</div>
+
+<nav>
+<button class="active" data-tab="texts" onclick="showTab('texts',this)">Text</button>
+<button data-tab="translate" onclick="showTab('translate',this)">Translate</button>
+<button data-tab="gaps" onclick="showTab('gaps',this)">Fill gaps</button>
+<button id="teacherTab" class="hidden" data-tab="teacher" onclick="showTab('teacher',this)">Teacher</button>
+</nav>
+
+<section id="texts" class="card">
+<h2>Reading texts</h2>
+<div id="lessonList">Loading lessons...</div>
+</section>
+
+<section id="translate" class="card hidden">
+<h2>Words from the text</h2>
+<div id="wordList">Choose a lesson first.</div>
+</section>
+
+<section id="gaps" class="card hidden">
+<h2>Fill in the gaps</h2>
+<div id="gapList">Choose a lesson first.</div>
+</section>
+
+<section id="teacher" class="card hidden">
+<h2>Create a new lesson</h2>
+<label>Lesson title</label>
+<input id="lessonTitle" placeholder="Example: My Cat">
+<label>Level</label>
+<select id="lessonLevel">
+<option>A1</option><option>A2</option><option>B1</option>
+<option>B2</option><option>C1</option>
+</select>
+<label>Topic</label>
+<input id="lessonTopic" placeholder="Animals, Travel, Family...">
+<label>Group (optional)</label>
+<input id="lessonGroup" placeholder="Group name">
+<label>Reading text</label>
+<textarea id="lessonStory" placeholder="Write your story here..."></textarea>
+<label>Vocabulary — one word per line, format: English = Russian</label>
+<textarea id="lessonWords" placeholder="cat = кошка&#10;beautiful = красивый"></textarea>
+<label>Fill gaps — one sentence per line, use ___ for the gap and | for the answer</label>
+<textarea id="lessonGaps" placeholder="I have a ___ | cat&#10;The sky is ___ | blue"></textarea>
+<label><input id="published" type="checkbox" checked style="width:auto"> Publish lesson</label>
+<br><button class="primary" onclick="createLesson()">Save lesson</button>
+<p id="teacherMessage" class="muted"></p>
+</section>
+</section>
+</main>
+<footer>KAMILA ENGLISH SCHOOL · Learn with confidence</footer>
+
+<script>
+const SUPABASE_URL = "https://aidjhwgcnvoucozskghl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_C7PKJ6TvTYqsW1IMnK9g1A_UGcDORju";
+const db = supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let currentUser=null, currentRole="student", currentLesson=null;
+
+function message(id,text){document.getElementById(id).textContent=text;}
+
+async function signIn(){
+ const {data,error}=await db.auth.signInWithPassword({
+  email:email.value.trim(),password:password.value
+ });
+ if(error){message("authMessage",error.message);return;}
+ await loadApp(data.user);
+}
+
+async function signUp(){
+ const {data,error}=await db.auth.signUp({
+  email:email.value.trim(),password:password.value
+ });
+ if(error){message("authMessage",error.message);return;}
+ if(data.session) await loadApp(data.user);
+ else message("authMessage","Account created. Check your email to confirm registration.");
+}
+
+async function signOut(){
+ await db.auth.signOut();
+ location.reload();
+}
+
+async function loadApp(user){
+ currentUser=user;
+ const {data,error}=await db.from("profiles")
+ .select("role").eq("id",user.id).single();
+ if(error){message("authMessage","Profile not found. Contact your teacher.");return;}
+ currentRole=data.role;
+ document.getElementById("auth").classList.add("hidden");
+ document.getElementById("app").classList.remove("hidden");
+ document.getElementById("welcome").textContent=
+  "Welcome, "+user.email+" · "+currentRole;
+ if(currentRole==="teacher")
+  document.getElementById("teacherTab").classList.remove("hidden");
+ await loadLessons();
+}
+
+function showTab(id,button){
+ document.querySelectorAll("#app > section").forEach(s=>{
+  if(s.id!=="auth")s.classList.add("hidden");
+ });
+ document.getElementById(id).classList.remove("hidden");
+ document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+ button.classList.add("active");
+}
+
+function safe(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
+}
+
+async function loadLessons(){
+ const {data,error}=await db.from("lessons").select("*")
+ .order("created_at",{ascending:false});
+ if(error){document.getElementById("lessonList").textContent=error.message;return;}
+ const lessons=currentRole==="teacher"?data:data.filter(x=>x.published);
+ const list=document.getElementById("lessonList");
+ list.innerHTML="";
+ if(!lessons.length){list.textContent="No lessons yet.";return;}
+ lessons.forEach(lesson=>{
+  const card=document.createElement("div");
+  card.className="word";
+  card.innerHTML="<b>"+safe(lesson.title)+"</b><p class='muted'>"+
+   safe(lesson.level)+" · "+safe(lesson.topic||"")+"</p>";
+  const btn=document.createElement("button");
+  btn.textContent="Open lesson";
+  btn.onclick=()=>openLesson(lesson);
+  card.appendChild(btn);list.appendChild(card);
+ });
+}
+
+function openLesson(lesson){
+ currentLesson=lesson;
+ document.getElementById("texts").innerHTML=
+  "<h2>"+safe(lesson.title)+"</h2><p class='muted'>"+
+  safe(lesson.level)+" · "+safe(lesson.topic||"")+"</p>"+
+  "<div class='story'>"+safe(lesson.story)+"</div>"+
+  "<button onclick=\"showTab('translate',document.querySelector('[data-tab=translate]'))\">Translate</button>"+
+  "<button onclick=\"showTab('gaps',document.querySelector('[data-tab=gaps]'))\">Fill gaps</button>";
+ const words=Array.isArray(lesson.words)?lesson.words:[];
+ document.getElementById("wordList").innerHTML=words.map(w=>
+  "<div class='word'><b>"+safe(w.word)+"</b> — "+safe(w.translation)+"</div>"
+ ).join("")||"No vocabulary yet.";
+ renderGaps(lesson.gap_sentences||[]);
+}
+
+function renderGaps(gaps){
+ const area=document.getElementById("gapList");
+ if(!gaps.length){area.textContent="No exercises yet.";return;}
+ area.innerHTML="";
+ gaps.forEach((g,i)=>{
+  const div=document.createElement("div");
+  div.className="word";
+  div.innerHTML="<p>"+safe(g.sentence)+"</p><input id='gap"+i+"' placeholder='Your answer'>";
+  area.appendChild(div);
+ });
+ const btn=document.createElement("button");
+ btn.className="primary";btn.textContent="Check answers";
+ btn.onclick=()=>checkGaps(gaps);
+ area.appendChild(btn);
+}
+
+async function checkGaps(gaps){
+ let score=0;
+ gaps.forEach((g,i)=>{
+  const answer=document.getElementById("gap"+i).value.trim();
+  if(answer.toLowerCase()===g.answer.toLowerCase())score++;
+ });
+ message("teacherMessage","");
+ const result="Your score: "+score+" / "+gaps.length;
+ const {error}=await db.from("results").insert({
+  student_id:currentUser.id,lesson_id:currentLesson.id,
+  exercise:"fill_gaps",score:score,total:gaps.length
+ });
+ alert(error?result+" (Result could not be saved: "+error.message+")":result+" — saved!");
+}
+
+async function createLesson(){
+ const words=document.getElementById("lessonWords").value.split("\n")
+ .map(line=>line.trim()).filter(Boolean).map(line=>{
+  const parts=line.split("=");
+  return {word:(parts[0]||"").trim(),translation:(parts.slice(1).join("=")||"").trim()};
+ });
+ const gaps=document.getElementById("lessonGaps").value.split("\n")
+ .map(line=>line.trim()).filter(Boolean).map(line=>{
+  const parts=line.split("|");
+  return {sentence:(parts[0]||"").trim(),answer:(parts[1]||"").trim()};
+ }).filter(g=>g.sentence&&g.answer);
+ const lesson={
+  title:document.getElementById("lessonTitle").value.trim(),
+  level:document.getElementById("lessonLevel").value,
+  topic:document.getElementById("lessonTopic").value.trim(),
+  group_name:document.getElementById("lessonGroup").value.trim()||null,
+  story:document.getElementById("lessonStory").value.trim(),
+  words,gap_sentences:gaps,
+  published:document.getElementById("published").checked,
+  created_by:currentUser.id
+ };
+ if(!lesson.title||!lesson.story){message("teacherMessage","Please enter a title and reading text.");return;}
+ const {error}=await db.from("lessons").insert(lesson);
+ if(error){message("teacherMessage",error.message);return;}
+ message("teacherMessage","Lesson saved successfully!");
+ await loadLessons();
+}
+
+db.auth.getSession().then(({data})=>{
+ if(data.session)loadApp(data.session.user);
+});
+</script>
+</body>
+</html>
