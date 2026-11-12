@@ -588,6 +588,7 @@ async function loadResults(){
 }
 
 
+
 function renderResults(){
   let rows=[...allResults];
   const q=($("resultSearch")?.value||"").toLowerCase();
@@ -604,12 +605,15 @@ function renderResults(){
     ].join(" ").toLowerCase().includes(q))
   );
 
-  if(sort==="old") rows.reverse();
-  else if(sort==="score"){
+  if(sort==="old"){
+    rows.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+  }else if(sort==="score"){
     rows.sort((a,b)=>
-      (b.score/Math.max(1,b.total))-
-      (a.score/Math.max(1,a.total))
+      (Number(b.score)/Math.max(1,Number(b.total)))-
+      (Number(a.score)/Math.max(1,Number(a.total)))
     );
+  }else{
+    rows.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
   }
 
   if(!rows.length){
@@ -618,33 +622,81 @@ function renderResults(){
     return;
   }
 
-  
-$("resultsList").innerHTML=
-'<div style="display:flex;flex-direction:column;gap:10px;">'+
-rows.map(r=>{
-  const student=safe(r.student?.full_name||r.student?.email||"Unknown");
-  const lesson=safe(r.lesson?.title||"Unknown");
-  const exercise=safe((r.exercise||"").replace(/_/g," "));
-  const score=Number(r.score)||0;
-  const total=Number(r.total)||0;
-  const date=new Date(r.created_at).toLocaleString();
+  const groups={};
 
-  return `
-    <article style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 12px;padding:14px 16px;background:#f8faf9;border:1px solid #e6ece8;border-radius:16px;">
-      <div style="min-width:0;">
-        <div style="font-size:11px;color:#82928a;letter-spacing:1px;font-weight:700;">STUDENT</div>
-        <div style="font-size:16px;font-weight:700;color:#24384b;overflow-wrap:anywhere;">${student}</div>
-      </div>
-      <div style="font-size:19px;font-weight:700;color:#24384b;white-space:nowrap;">${score}/${total}</div>
-      <div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:5px 18px;font-size:13px;color:#526174;">
-        <span><span style="color:#82928a;">Lesson:</span> ${lesson}</span>
-        <span><span style="color:#82928a;">Exercise:</span> ${exercise}</span>
-      </div>
-      <div style="grid-column:1/-1;font-size:11px;color:#82928a;">${date}</div>
-    </article>
-  `;
-}).join("")+
-'</div>';
+  rows.forEach(r=>{
+    const d=new Date(r.created_at);
+    const key=[
+      d.getFullYear(),
+      String(d.getMonth()+1).padStart(2,"0"),
+      String(d.getDate()).padStart(2,"0")
+    ].join("-");
+
+    if(!groups[key])groups[key]=[];
+    groups[key].push(r);
+  });
+
+  const keys=Object.keys(groups).sort((a,b)=>
+    sort==="old"?a.localeCompare(b):b.localeCompare(a)
+  );
+
+  $("resultsList").innerHTML=
+    '<div style="display:flex;flex-direction:column;gap:9px;">'+
+    keys.map((key,index)=>{
+      const dayRows=groups[key];
+      const parts=key.split("-");
+      const dateLabel=new Date(
+        Number(parts[0]),
+        Number(parts[1])-1,
+        Number(parts[2])
+      ).toLocaleDateString("ru-RU",{
+        weekday:"long",
+        day:"numeric",
+        month:"long",
+        year:"numeric"
+      });
+
+      const total=dayRows.reduce((s,r)=>s+(Number(r.total)||0),0);
+      const score=dayRows.reduce((s,r)=>s+(Number(r.score)||0),0);
+      const average=total?Math.round(score/total*100):0;
+
+      return `
+        <details style="background:#fff;border:1px solid #e6ece8;border-radius:13px;overflow:hidden;" ${index===0?"open":""}>
+          <summary style="display:flex;align-items:center;gap:9px;padding:12px 14px;cursor:pointer;list-style:none;">
+            <span style="font-size:17px;">📁</span>
+            <span style="flex:1;font-size:13px;font-weight:700;color:#24384b;text-transform:capitalize;">${safe(dateLabel)}</span>
+            <span style="font-size:11px;color:#718092;white-space:nowrap;">${dayRows.length} · ${average}%</span>
+            <span style="font-size:16px;color:#82918c;">⌄</span>
+          </summary>
+
+          <div style="padding:0 9px 9px;display:flex;flex-direction:column;gap:6px;">
+            ${dayRows.map(r=>{
+              const student=safe(r.student?.full_name||r.student?.email||"Unknown");
+              const lesson=safe(r.lesson?.title||"Unknown");
+              const exercise=safe((r.exercise||"").replace(/_/g," "));
+              const points=Number(r.score)||0;
+              const maximum=Number(r.total)||0;
+              const time=new Date(r.created_at).toLocaleTimeString("ru-RU",{
+                hour:"2-digit",
+                minute:"2-digit"
+              });
+
+              return `
+                <article style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:3px 10px;padding:9px 11px;background:#f7f9f7;border:1px solid #edf1ee;border-radius:10px;">
+                  <div style="min-width:0;">
+                    <div style="font-size:13px;font-weight:700;color:#24384b;overflow-wrap:anywhere;">${student}</div>
+                    <div style="font-size:11px;color:#718092;margin-top:2px;overflow-wrap:anywhere;">${lesson} · ${exercise}</div>
+                  </div>
+                  <div style="font-size:16px;font-weight:700;color:#36536d;white-space:nowrap;">${points}<span style="font-size:11px;color:#718092;font-weight:500;">/${maximum}</span></div>
+                  <div style="grid-column:1/-1;font-size:10px;color:#89968f;">${time}</div>
+                </article>
+              `;
+            }).join("")}
+          </div>
+        </details>
+      `;
+    }).join("")+
+    '</div>';
 }
 
 
