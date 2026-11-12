@@ -268,8 +268,44 @@ p, label, .muted, .story {
  <section id="results" class="card tab-panel hidden">
   <div class="eyebrow">Learning analytics</div><h2>Student results</h2><p class="muted">Review practice attempts and student progress.</p>
   <div class="stats"><div class="stat"><span class="muted small">Attempts</span><strong id="statAttempts">—</strong></div><div class="stat"><span class="muted small">Average score</span><strong id="statAverage">—</strong></div><div class="stat"><span class="muted small">Students</span><strong id="statStudents">—</strong></div></div>
-  <div class="toolbar"><input id="resultSearch" placeholder="Search student or lesson..." oninput="renderResults()"><select id="resultExercise" onchange="renderResults()"><option value="">All exercises</option><option value="fill_gaps">Fill gaps</option><option value="translation">Translation</option></select><select id="resultSort" onchange="renderResults()"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="score">Highest score</option></select></div>
-  <div id="resultsList"><div class="empty">Loading results...</div></div>
+  <div class="toolbar"><input id="resultSearch" placeholder="Search student or lesson..." oninput="renderResults()"><select id="resultExercise" onchange="renderResults()"><option value="">All exercises</option><option value="fill_gaps">Fill gaps</option><option value="translation">Translation</option>
+ <select id="resultStudent" onchange="renderResults()">
+  <option value="">All students</option>
+</select>
+  </select><select id="resultSort" onchange="renderResults()"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="score">Highest score</option></select></div>
+  <div id="resultsList">
+  <div class="empty">Loading results...</div>
+</div>
+
+<section id="studentProfile" class="hidden" style="margin-top:20px;">
+  <button class="btn ghost smallbtn" onclick="closeStudentProfile()">
+    ← Back to results
+  </button>
+
+  <div class="card" style="margin-top:14px;">
+    <div class="eyebrow">Student profile</div>
+    <h2 id="profileStudentName">Student</h2>
+    <p id="profileStudentEmail" class="muted small"></p>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="muted small">Attempts</span>
+        <strong id="profileAttempts">0</strong>
+      </div>
+      <div class="stat">
+        <span class="muted small">Average score</span>
+        <strong id="profileAverage">—</strong>
+      </div>
+      <div class="stat">
+        <span class="muted small">Lessons</span>
+        <strong id="profileLessons">0</strong>
+      </div>
+    </div>
+
+    <h3>Learning history</h3>
+    <div id="profileHistory"></div>
+  </div>
+</section>
  </section>
 </section>
 </main>
@@ -579,6 +615,25 @@ async function loadResults(){
   student:students.find(s=>s.id===r.student_id),
   lesson:lessons.find(l=>l.id===r.lesson_id)
  }));
+  const studentSelect=$("resultStudent");
+ const selectedStudent=studentSelect.value;
+
+ const uniqueStudents=[...new Map(
+  students.map(st=>[st.id,st])
+ ).values()].sort((a,b)=>
+  (a.full_name||a.email||"").localeCompare(b.full_name||b.email||"")
+ );
+
+ studentSelect.innerHTML='<option value="">All students</option>'+
+  uniqueStudents.map(st=>
+   '<option value="'+safe(st.id)+'">'+
+   safe(st.full_name||st.email||"Student")+
+   '</option>'
+  ).join("");
+
+ if(uniqueStudents.some(st=>st.id===selectedStudent)){
+  studentSelect.value=selectedStudent;
+ }
  $("statAttempts").textContent=rows.length;
  const total=rows.reduce((s,r)=>s+(Number(r.total)||0),0);
  const score=rows.reduce((s,r)=>s+(Number(r.score)||0),0);
@@ -649,7 +704,7 @@ function renderResults(){
         Number(parts[0]),
         Number(parts[1])-1,
         Number(parts[2])
-      ).toLocaleDateString("ru-RU",{
+      ).toLocaleDateString("en-US",{
         weekday:"long",
         day:"numeric",
         month:"long",
@@ -671,12 +726,13 @@ function renderResults(){
 
           <div style="padding:0 9px 9px;display:flex;flex-direction:column;gap:6px;">
             ${dayRows.map(r=>{
-              const student=safe(r.student?.full_name||r.student?.email||"Unknown");
+              const studentName=r.student?.full_name||r.student?.email||"Unknown";
+const student=safe(studentName);
               const lesson=safe(r.lesson?.title||"Unknown");
               const exercise=safe((r.exercise||"").replace(/_/g," "));
               const points=Number(r.score)||0;
               const maximum=Number(r.total)||0;
-              const time=new Date(r.created_at).toLocaleTimeString("ru-RU",{
+              const time=new Date(r.created_at).toLocaleTimeString("en-GB",{
                 hour:"2-digit",
                 minute:"2-digit"
               });
@@ -684,7 +740,7 @@ function renderResults(){
               return `
                 <article style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:3px 10px;padding:9px 11px;background:#f7f9f7;border:1px solid #edf1ee;border-radius:10px;">
                   <div style="min-width:0;">
-                    <div style="font-size:13px;font-weight:700;color:#24384b;overflow-wrap:anywhere;">${student}</div>
+                    <button onclick="openStudentProfile('${safe(r.student_id)}')" style="border:0;background:transparent;padding:0;text-align:left;font:inherit;font-size:13px;font-weight:700;color:#36536d;text-decoration:underline;cursor:pointer;">${student}</button>
                     <div style="font-size:11px;color:#718092;margin-top:2px;overflow-wrap:anywhere;">${lesson} · ${exercise}</div>
                   </div>
                   <div style="font-size:16px;font-weight:700;color:#36536d;white-space:nowrap;">${points}<span style="font-size:11px;color:#718092;font-weight:500;">/${maximum}</span></div>
@@ -697,6 +753,97 @@ function renderResults(){
       `;
     }).join("")+
     '</div>';
+}
+ function openStudentProfile(studentId){
+
+ const history=allResults
+  .filter(r=>String(r.student_id)===String(studentId))
+  .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+
+ if(!history.length)return;
+
+ const student=history[0].student;
+
+ const total=history.reduce(
+  (sum,r)=>sum+(Number(r.total)||0),0
+ );
+
+ const score=history.reduce(
+  (sum,r)=>sum+(Number(r.score)||0),0
+ );
+
+ const uniqueLessons=new Set(
+  history.map(r=>r.lesson_id).filter(Boolean)
+ );
+
+ $("profileStudentName").textContent=
+  student?.full_name||"Student";
+
+ $("profileStudentEmail").textContent=
+  student?.email||"";
+
+ $("profileAttempts").textContent=history.length;
+
+ $("profileAverage").textContent=
+  total?Math.round(score/total*100)+"%":"—";
+
+ $("profileLessons").textContent=uniqueLessons.size;
+
+ $("profileHistory").innerHTML=history.map(r=>{
+
+  const date=new Date(r.created_at);
+
+  const dateText=date.toLocaleDateString("en-US",{
+   weekday:"short",
+   month:"short",
+   day:"numeric",
+   year:"numeric"
+  });
+
+  const timeText=date.toLocaleTimeString("en-GB",{
+   hour:"2-digit",
+   minute:"2-digit"
+  });
+
+  return `
+   <article style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;background:#f7f9f7;border:1px solid #edf1ee;border-radius:11px;margin:8px 0;">
+
+    <div style="min-width:0;">
+     <b style="font-size:13px;">
+      ${safe(r.lesson?.title||"Unknown lesson")}
+     </b>
+
+     <div class="muted small">
+      ${safe((r.exercise||"").replace(/_/g," "))}
+      · ${dateText} · ${timeText}
+     </div>
+    </div>
+
+    <strong style="white-space:nowrap;color:#36536d;">
+     ${Number(r.score)||0}/${Number(r.total)||0}
+    </strong>
+
+   </article>
+  `;
+
+ }).join("");
+
+ $("resultsList").classList.add("hidden");
+ $("studentProfile").classList.remove("hidden");
+
+ $("studentProfile").scrollIntoView({
+  behavior:"smooth",
+  block:"start"
+ });
+}
+
+
+function closeStudentProfile(){
+
+ $("studentProfile").classList.add("hidden");
+
+ $("resultsList").classList.remove("hidden");
+
 }
 
 
