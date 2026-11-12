@@ -240,7 +240,27 @@ p, label, .muted, .story {
  </nav>
  <section id="texts" class="card tab-panel">
   <div class="eyebrow">Library</div><h2>Reading lessons</h2><p class="muted">Choose a lesson and learn at your own pace.</p>
-  <div class="toolbar"><input id="lessonSearch" placeholder="Search lessons..." oninput="renderLessonList()"><select id="levelFilter" onchange="renderLessonList()"><option value="">All levels</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option></select><select id="groupFilter" onchange="renderLessonList()"><option value="">All groups</option></select></div>
+  <div class="toolbar">
+  <input id="resultSearch"
+    placeholder="Search student or lesson..."
+    oninput="renderResults()">
+
+  <select id="resultExercise" onchange="renderResults()">
+    <option value="">All exercises</option>
+    <option value="fill_gaps">Fill gaps</option>
+    <option value="translation">Translation</option>
+  </select>
+
+  <select id="resultStudent" onchange="renderResults()">
+    <option value="">All students</option>
+  </select>
+
+  <select id="resultSort" onchange="renderResults()">
+    <option value="new">Newest first</option>
+    <option value="old">Oldest first</option>
+    <option value="score">Highest score</option>
+  </select>
+</div>
   <div id="lessonList" class="lesson-grid"><div class="empty">Loading lessons...</div></div>
   <div id="reader" class="lesson-reader hidden"></div>
  </section>
@@ -268,11 +288,25 @@ p, label, .muted, .story {
  <section id="results" class="card tab-panel hidden">
   <div class="eyebrow">Learning analytics</div><h2>Student results</h2><p class="muted">Review practice attempts and student progress.</p>
   <div class="stats"><div class="stat"><span class="muted small">Attempts</span><strong id="statAttempts">—</strong></div><div class="stat"><span class="muted small">Average score</span><strong id="statAverage">—</strong></div><div class="stat"><span class="muted small">Students</span><strong id="statStudents">—</strong></div></div>
-  <div class="toolbar"><input id="resultSearch" placeholder="Search student or lesson..." oninput="renderResults()"><select id="resultExercise" onchange="renderResults()"><option value="">All exercises</option><option value="fill_gaps">Fill gaps</option><option value="translation">Translation</option>
- <select id="resultStudent" onchange="renderResults()">
-  <option value="">All students</option>
-</select>
-  </select><select id="resultSort" onchange="renderResults()"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="score">Highest score</option></select></div>
+  <div class="toolbar">
+  <input id="resultSearch" placeholder="Search student or lesson..." oninput="renderResults()">
+
+  <select id="resultExercise" onchange="renderResults()">
+    <option value="">All exercises</option>
+    <option value="fill_gaps">Fill gaps</option>
+    <option value="translation">Translation</option>
+  </select>
+
+  <select id="resultStudent" onchange="renderResults()">
+    <option value="">All students</option>
+  </select>
+
+  <select id="resultSort" onchange="renderResults()">
+    <option value="new">Newest first</option>
+    <option value="old">Oldest first</option>
+    <option value="score">Highest score</option>
+  </select>
+</div>
   <div id="resultsList">
   <div class="empty">Loading results...</div>
 </div>
@@ -648,10 +682,12 @@ function renderResults(){
   let rows=[...allResults];
   const q=($("resultSearch")?.value||"").toLowerCase();
   const ex=$("resultExercise")?.value||"";
-  const sort=$("resultSort")?.value||"new";
+const studentId=$("resultStudent")?.value||"";
+const sort=$("resultSort")?.value||"new";
 
   rows=rows.filter(r=>
     (!ex||r.exercise===ex)&&
+(!studentId||String(r.student_id)===studentId)&&
     (!q||[
       r.student?.full_name,
       r.student?.email,
