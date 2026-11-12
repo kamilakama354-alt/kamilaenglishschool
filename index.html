@@ -618,31 +618,33 @@ function renderResults(){
     return;
   }
 
-  $("resultsList").innerHTML=
-    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px;">'+
-    rows.map(r=>{
-      const student=safe(r.student?.full_name||r.student?.email||"Unknown");
-      const lesson=safe(r.lesson?.title||"Unknown");
-      const exercise=safe((r.exercise||"").replace(/_/g," "));
-      const score=Number(r.score)||0;
-      const total=Number(r.total)||0;
-      const date=new Date(r.created_at).toLocaleString();
+  
+$("resultsList").innerHTML=
+'<div style="display:flex;flex-direction:column;gap:10px;">'+
+rows.map(r=>{
+  const student=safe(r.student?.full_name||r.student?.email||"Unknown");
+  const lesson=safe(r.lesson?.title||"Unknown");
+  const exercise=safe((r.exercise||"").replace(/_/g," "));
+  const score=Number(r.score)||0;
+  const total=Number(r.total)||0;
+  const date=new Date(r.created_at).toLocaleString();
 
-      return `
-        <article style="background:#f5f8f6;border:1px solid #e2eae5;border-radius:18px;padding:20px;">
-          <div style="font-size:12px;color:#82928b;font-weight:700;letter-spacing:1px;margin-bottom:8px;">STUDENT</div>
-          <div style="font-size:19px;font-weight:700;color:#26394c;margin-bottom:18px;">${student}</div>
-          <div style="font-size:13px;color:#82928b;margin-bottom:5px;">Lesson</div>
-          <div style="font-size:16px;font-weight:600;margin-bottom:14px;">${lesson}</div>
-          <div style="font-size:13px;color:#82928b;margin-bottom:5px;">Exercise</div>
-          <div style="font-size:15px;margin-bottom:14px;">${exercise}</div>
-          <div style="font-size:13px;color:#82928b;margin-bottom:5px;">Score</div>
-          <div style="font-size:25px;font-weight:700;color:#26394c;margin-bottom:14px;">${score}/${total}</div>
-          <div style="font-size:12px;color:#82928b;">${date}</div>
-        </article>
-      `;
-    }).join("")+
-    '</div>';
+  return `
+    <article style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 12px;padding:14px 16px;background:#f8faf9;border:1px solid #e6ece8;border-radius:16px;">
+      <div style="min-width:0;">
+        <div style="font-size:11px;color:#82928a;letter-spacing:1px;font-weight:700;">STUDENT</div>
+        <div style="font-size:16px;font-weight:700;color:#24384b;overflow-wrap:anywhere;">${student}</div>
+      </div>
+      <div style="font-size:19px;font-weight:700;color:#24384b;white-space:nowrap;">${score}/${total}</div>
+      <div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:5px 18px;font-size:13px;color:#526174;">
+        <span><span style="color:#82928a;">Lesson:</span> ${lesson}</span>
+        <span><span style="color:#82928a;">Exercise:</span> ${exercise}</span>
+      </div>
+      <div style="grid-column:1/-1;font-size:11px;color:#82928a;">${date}</div>
+    </article>
+  `;
+}).join("")+
+'</div>';
 }
 
 
