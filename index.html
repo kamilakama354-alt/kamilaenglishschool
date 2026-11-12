@@ -587,39 +587,64 @@ async function loadResults(){
  renderResults();
 }
 
+
 function renderResults(){
- let rows=[...allResults];
- const q=($("resultSearch")?.value||"").toLowerCase();
- const ex=$("resultExercise")?.value||"";
- const sort=$("resultSort")?.value||"new";
- rows=rows.filter(r=>
-  (!ex||r.exercise===ex)&&
-  (!q||[r.student?.full_name,r.student?.email,r.lesson?.title,r.exercise]
-   .join(" ").toLowerCase().includes(q))
- );
- if(sort==="old")rows.reverse();
- else if(sort==="score"){
-  rows.sort((a,b)=>
-   (b.score/Math.max(1,b.total))-(a.score/Math.max(1,a.total))
+  let rows=[...allResults];
+  const q=($("resultSearch")?.value||"").toLowerCase();
+  const ex=$("resultExercise")?.value||"";
+  const sort=$("resultSort")?.value||"new";
+
+  rows=rows.filter(r=>
+    (!ex||r.exercise===ex)&&
+    (!q||[
+      r.student?.full_name,
+      r.student?.email,
+      r.lesson?.title,
+      r.exercise
+    ].join(" ").toLowerCase().includes(q))
   );
- }
- if(!rows.length){
-  $("resultsList").innerHTML='<div class="empty">No results match your filters.</div>';
-  return;
- }
- $("resultsList").innerHTML=
- '<div class="table-wrap"><table><thead><tr>'+
- '<th>Student</th><th>Lesson</th><th>Exercise</th><th>Score</th><th>Date</th>'+
- '</tr></thead><tbody>'+
- rows.map(r=>`<tr>
-  <td>${safe(r.student?.full_name||r.student?.email||"Unknown")}</td>
-  <td>${safe(r.lesson?.title||"Unknown")}</td>
-  <td>${safe(r.exercise)}</td>
-  <td><b>${Number(r.score)||0}/${Number(r.total)||0}</b></td>
-  <td>${new Date(r.created_at).toLocaleString()}</td>
- </tr>`).join("")+
- '</tbody></table></div>';
+
+  if(sort==="old") rows.reverse();
+  else if(sort==="score"){
+    rows.sort((a,b)=>
+      (b.score/Math.max(1,b.total))-
+      (a.score/Math.max(1,a.total))
+    );
+  }
+
+  if(!rows.length){
+    $("resultsList").innerHTML=
+      '<div class="empty">No results found.</div>';
+    return;
+  }
+
+  $("resultsList").innerHTML=
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px;">'+
+    rows.map(r=>{
+      const student=safe(r.student?.full_name||r.student?.email||"Unknown");
+      const lesson=safe(r.lesson?.title||"Unknown");
+      const exercise=safe((r.exercise||"").replace(/_/g," "));
+      const score=Number(r.score)||0;
+      const total=Number(r.total)||0;
+      const date=new Date(r.created_at).toLocaleString();
+
+      return `
+        <article style="background:#f5f8f6;border:1px solid #e2eae5;border-radius:18px;padding:20px;">
+          <div style="font-size:12px;color:#82928b;font-weight:700;letter-spacing:1px;margin-bottom:8px;">STUDENT</div>
+          <div style="font-size:19px;font-weight:700;color:#26394c;margin-bottom:18px;">${student}</div>
+          <div style="font-size:13px;color:#82928b;margin-bottom:5px;">Lesson</div>
+          <div style="font-size:16px;font-weight:600;margin-bottom:14px;">${lesson}</div>
+          <div style="font-size:13px;color:#82928b;margin-bottom:5px;">Exercise</div>
+          <div style="font-size:15px;margin-bottom:14px;">${exercise}</div>
+          <div style="font-size:13px;color:#82928b;margin-bottom:5px;">Score</div>
+          <div style="font-size:25px;font-weight:700;color:#26394c;margin-bottom:14px;">${score}/${total}</div>
+          <div style="font-size:12px;color:#82928b;">${date}</div>
+        </article>
+      `;
+    }).join("")+
+    '</div>';
 }
+
 
 db.auth.getSession().then(({data})=>{
  if(data.session)loadApp(data.session.user);
