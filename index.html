@@ -48,6 +48,7 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:13px}
 <section id="auth" class="card">
 <h2>Welcome!</h2>
 <p class="muted">Sign in or create your student account.</p>
+<input id="fullName" type="text" placeholder="Full name">
 <input id="email" type="email" placeholder="Email address">
 <input id="password" type="password" placeholder="Password">
 <button class="primary" onclick="signIn()">Sign in</button>
@@ -135,8 +136,13 @@ async function signIn(){
 }
 
 async function signUp(){
+  const fullNameValue = document.getElementById("fullName").value.trim();
   const emailValue = document.getElementById("email").value.trim();
   const passwordValue = document.getElementById("password").value;
+  if (!fullNameValue) {
+  message("authMessage", "Please enter your full name.");
+  return;
+}
 
   if (!emailValue || !passwordValue) {
     message("authMessage", "Enter your email and password.");
@@ -150,9 +156,14 @@ async function signUp(){
 
   try {
     const { data, error } = await db.auth.signUp({
-      email: emailValue,
-      password: passwordValue
-    });
+  email: emailValue,
+  password: passwordValue,
+  options: {
+    data: {
+      full_name: fullNameValue
+    }
+  }
+});
 
     if (error) {
       message("authMessage", error.message);
