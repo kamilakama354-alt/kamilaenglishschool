@@ -306,8 +306,35 @@ p, label, .muted, .story {
       </select>
     </div>
 
-    <div class="field span-12">
-      <label>Vocabulary list name</label>
+    
+     
+<div class="field span-6">
+  <label>Story genre</label>
+  <select id="genGenre">
+    <option value="mystery">Mystery & Detective</option>
+    <option value="adventure">Adventure</option>
+    <option value="fantasy">Fantasy & Magic</option>
+    <option value="romance">Romance & Relationships</option>
+    <option value="drama">Emotional Drama</option>
+    <option value="survival">Survival & Thriller</option>
+    <option value="comedy">Comedy</option>
+    <option value="scifi">Science Fiction</option>
+    <option value="inspiring">Inspirational</option>
+    <option value="horror">Spooky Stories</option>
+  </select>
+</div>
+
+<div class="field span-6">
+  <label>Story length</label>
+  <select id="genLength">
+    <option value="short">Short — 400 words</option>
+    <option value="medium" selected>Medium — 700 words</option>
+    <option value="long">Long — 1,000 words</option>
+    <option value="epic">Extra long — 1,300 words</option>
+  </select>
+</div>
+
+     <label>Vocabulary list name</label>
       <input id="genListName" placeholder="Example: Words from the text Cat">
     </div>
 
@@ -618,114 +645,290 @@ async function saveLesson(){
 }
  let generatedStoryData=null;
 
+
 function generateStory(){
 
  const level=$("genLevel").value;
  const topic=$("genTopic").value;
+ const genre=$("genGenre").value;
+ const length=$("genLength").value;
  const listName=$("genListName").value.trim();
  const rawWords=$("genWords").value;
 
- const words=rawWords.split("\n")
-  .map(line=>{
-   const p=line.split("=");
-   return {
-    word:(p[0]||"").trim(),
-    translation:(p.slice(1).join("=")||"").trim()
-   };
-  })
-  .filter(w=>w.word&&w.translation);
+ const words=rawWords.split("\n").map(line=>{
+  const p=line.split("=");
+  return {
+   word:(p[0]||"").trim(),
+   translation:(p.slice(1).join("=")||"").trim()
+  };
+ }).filter(w=>w.word&&w.translation);
 
  if(!words.length){
-  message("generatorMessage","Please add at least one word with its translation.");
+  message("generatorMessage","Please add vocabulary words first.");
   return;
  }
 
- const names=["Emma","Oliver","Mia","Leo","Sophie","Jack"];
- const places={
-  Friendship:"a small town",
-  Family:"a family home",
-  Animals:"a beautiful forest",
-  Travel:"a new city",
-  Adventure:"a mysterious place",
-  "Love and relationships":"a quiet little cafe",
-  "School and education":"a new school",
-  "Work and career":"a busy office",
-  "Food and cooking":"a small restaurant",
-  "Health and lifestyle":"a peaceful village",
-  Nature:"a green forest",
-  Mystery:"an old house",
-  Technology:"a modern city",
-  "Daily life":"a quiet neighborhood",
-  "Personal development":"a beautiful town"
+ if(words.length>35){
+  message("generatorMessage","Please use no more than 35 words at a time.");
+  return;
+ }
+
+ const lengths={
+  short:400,
+  medium:700,
+  long:1000,
+  epic:1300
  };
 
- const name=names[Math.floor(Math.random()*names.length)];
- const place=places[topic]||"a new place";
+ const target=lengths[length]||700;
 
- const openings={
-  A1:`One day, ${name} went to ${place}. It was a special morning. ${name} wanted to discover something new.`,
-  A2:`Last weekend, ${name} visited ${place}. At first, everything seemed ordinary, but soon an interesting situation began.`,
-  B1:`When ${name} arrived at ${place}, there was something unusual in the air. A small discovery soon turned into an unforgettable experience.`,
-  B2:`Although ${name} had visited ${place} before, this time everything felt different. An unexpected event changed the plans for the day.`,
-  C1:`What began as an ordinary visit to ${place} gradually developed into an experience that challenged ${name}'s expectations and changed the way they saw the world.`
- };
-
- const middle={
-  A1:`There, ${name} found a small notebook. It had many interesting words inside.`,
-  A2:`While exploring the area, ${name} discovered a notebook. It contained several unfamiliar words and a surprising message.`,
-  B1:`During the visit, ${name} came across an old notebook. Each page contained a new clue, and curiosity made it impossible to stop reading.`,
-  B2:`While looking around, ${name} discovered a notebook filled with unusual notes. Each new page revealed another detail about the place.`,
-  C1:`Among the things left behind, ${name} discovered a notebook whose unusual notes suggested that the place had a much more interesting history than anyone had imagined.`
- };
-
- const endings={
-  A1:`At the end of the day, ${name} felt happy. It was a wonderful adventure, and there was still much to learn.`,
-  A2:`By the end of the day, ${name} understood that even a simple journey could become a memorable adventure.`,
-  B1:`Eventually, everything became clear. ${name} returned home with new knowledge and a story worth sharing.`,
-  B2:`By the time the day was over, ${name} had learned an important lesson: unexpected experiences can bring valuable discoveries.`,
-  C1:`Looking back, ${name} realised that the most meaningful discoveries often happen when people remain curious and open to unfamiliar experiences.`
- };
-
- const shuffled=[...words].sort(()=>Math.random()-0.5);
-
- const storyParts=[
-  openings[level],
-  middle[level]
+ const characters=[
+  ["Emma","Oliver"],
+  ["Mia","Leo"],
+  ["Sophie","Daniel"],
+  ["Amira","Noah"],
+  ["Lily","Alex"],
+  ["Sofia","Theo"]
  ];
 
- shuffled.forEach((item,index)=>{
-  const sentence=level==="A1"
-   ? `${name} read the word "${item.word}" in the notebook.`
-   : level==="A2"
-   ? `One page showed the word "${item.word}", which ${name} carefully wrote down.`
-   : level==="B1"
-   ? `The word "${item.word}" appeared in the notes, giving ${name} another detail to think about.`
-   : level==="B2"
-   ? `Among the notes, the word "${item.word}" stood out and helped ${name} understand the message more clearly.`
-   : `The appearance of the word "${item.word}" offered another small clue and encouraged ${name} to examine the notes more carefully.`;
+ const pair=characters[Math.floor(Math.random()*characters.length)];
+ const hero=pair[0];
+ const friend=pair[1];
 
-  storyParts.push(sentence);
+ const places={
+  Friendship:"a small town near the sea",
+  Family:"an old family house",
+  Animals:"a mysterious forest",
+  Travel:"a beautiful city in another country",
+  Adventure:"a remote mountain village",
+  "Love and relationships":"a little cafe in the city",
+  "School and education":"an unusual old school",
+  "Work and career":"a creative company",
+  "Food and cooking":"a famous family restaurant",
+  "Health and lifestyle":"a peaceful village",
+  Nature:"a forest beside a deep lake",
+  Mystery:"an abandoned hotel",
+  Technology:"a secret research laboratory",
+  "Daily life":"a quiet neighbourhood",
+  "Personal development":"a town full of opportunities"
+ };
+
+ const place=places[topic]||"an unusual place";
+
+ const plots={
+
+ mystery:{
+  object:"a mysterious envelope with no name on it",
+  secret:"someone had been leaving secret messages around the town",
+  twist:"the person they had been looking for was much closer than they imagined",
+  climax:"they discovered a hidden room containing photographs, letters and a diary",
+  ending:"they finally understood the mystery, but one last message suggested that another secret remained"
+ },
+
+ adventure:{
+  object:"an old map with a red cross in the mountains",
+  secret:"the map showed a place that did not exist on any modern map",
+  twist:"the treasure was not gold or money, but something far more valuable",
+  climax:"a dangerous storm forced them to make the most difficult decision of their journey",
+  ending:"they returned home exhausted but proud, knowing that the greatest reward had been the journey itself"
+ },
+
+ fantasy:{
+  object:"a silver key that shone in the dark",
+  secret:"the key belonged to a world that ordinary people could not see",
+  twist:"the person helping them was actually the guardian of the secret world",
+  climax:"they had to choose between keeping their ordinary lives and protecting a magical kingdom",
+  ending:"the magic returned, and they understood that courage and kindness were more powerful than any spell"
+ },
+
+ romance:{
+  object:"an old letter that had never been delivered",
+  secret:"two people had been waiting years to tell each other the truth",
+  twist:"a misunderstanding had changed both of their lives",
+  climax:"they finally met and had the conversation they had avoided for so long",
+  ending:"they realised that honest communication was the beginning of something new"
+ },
+
+ drama:{
+  object:"an old photograph with one person missing",
+  secret:"the family had been hiding an important story for many years",
+  twist:"the person everyone blamed had actually made a sacrifice for them",
+  climax:"they finally confronted the truth and shared feelings they had kept inside",
+  ending:"their problems did not disappear overnight, but they began to understand one another"
+ },
+
+ survival:{
+  object:"a radio sending a weak signal from somewhere in the mountains",
+  secret:"another group of people was trapped nearby",
+  twist:"the only way to save themselves was to help someone else first",
+  climax:"they faced freezing weather, limited supplies and one final dangerous obstacle",
+  ending:"they reached safety together and never forgot what teamwork had taught them"
+ },
+
+ comedy:{
+  object:"a suitcase that seemed to contain something different every time it opened",
+  secret:"a series of ridiculous misunderstandings had started with one tiny mistake",
+  twist:"the person causing all the confusion had been trying to organise a surprise",
+  climax:"the entire town became involved in the funniest event anyone could remember",
+  ending:"everyone laughed about the disaster, which unexpectedly became the best day of the year"
+ },
+
+ scifi:{
+  object:"a small machine that could show possible futures",
+  secret:"the machine had been sending warnings about an event that had not happened yet",
+  twist:"the future was changing every time someone tried to control it",
+  climax:"they had only a few minutes to stop a chain reaction",
+  ending:"they saved the day and learned that the future depends on the choices people make today"
+ },
+
+ inspiring:{
+  object:"an invitation to take part in a competition everyone considered impossible",
+  secret:"the main character had a talent they had never believed in",
+  twist:"their biggest critic had secretly been inspired by their efforts",
+  climax:"they had to overcome their fear and perform in front of a huge audience",
+  ending:"they discovered that success was not about being perfect, but about refusing to give up"
+ },
+
+ horror:{
+  object:"a music box that played by itself every night",
+  secret:"the house had been empty for more than thirty years, but someone was still leaving fresh footprints",
+  twist:"the frightening sounds were warnings about a hidden danger",
+  climax:"they entered the darkest room and discovered what had happened there",
+  ending:"they escaped before sunrise, but the music box began playing again the following night"
+ }
+
+ };
+
+ const plot=plots[genre]||plots.adventure;
+
+ const openings={
+  A1:`One evening, ${hero} and ${friend} went to ${place}. They wanted to have a wonderful day together. But something strange happened.`,
+  A2:`When ${hero} and ${friend} arrived at ${place}, they expected an ordinary day. However, they soon noticed something unusual.`,
+  B1:`It was supposed to be a normal day for ${hero} and ${friend}. But their visit to ${place} quickly turned into an unforgettable experience.`,
+  B2:`Neither ${hero} nor ${friend} could have imagined what awaited them at ${place}. One unexpected discovery was about to change everything.`,
+  C1:`What began as an ordinary visit to ${place} soon developed into an extraordinary experience that challenged everything ${hero} thought they knew.`
+ };
+
+ const scenes=[
+  `At first, neither of them understood what they were looking at. They examined it carefully, searching for a name, a date or any other useful information. There was nothing obvious, only a small detail that seemed strangely important.`,
+  `${hero} suggested asking someone for help, but ${friend} wanted to investigate first. They decided to look around. Every object seemed to have a story, and every small discovery created another question.`,
+  `Suddenly, they heard a noise behind them. Both turned around. Nobody was there. For a moment, they considered leaving, but curiosity was stronger than fear.`,
+  `They found an old notebook nearby. Several pages were missing, and the remaining ones contained unusual notes. Some words had been underlined, while others were written in a different handwriting.`,
+  `As they continued, the situation became more complicated. Their first explanation no longer made sense. They began to realise that somebody had carefully planned what they were seeing.`,
+  `${hero} wanted to make a quick decision, but ${friend} disagreed. They discussed the risks and considered what might happen if they were wrong. Eventually, they decided to work together.`,
+  `A new clue appeared when they least expected it. It connected two events that had seemed completely unrelated. Suddenly, the story began to make sense, although one important question remained unanswered.`,
+  `They discovered that ${plot.secret}. This changed everything. What had seemed like a simple problem was actually part of something much bigger.`,
+  `For the first time, they began to doubt whether they should continue. They were tired, confused and worried about the consequences. Still, they knew they could not simply ignore what they had discovered.`,
+  `Then came an unexpected revelation: ${plot.twist}. Neither of them spoke for several seconds. They had to reconsider everything they believed about the situation.`,
+  `They made a plan. It was not perfect, but it was their only chance. They divided the responsibilities, checked every detail and promised to stay together.`,
+  `The most difficult moment arrived just before sunset. ${plot.climax}. Their hearts were beating fast, but they refused to give up.`,
+  `At the last moment, ${hero} noticed something that everyone else had missed. It was a small detail, almost invisible, but it gave them the answer they needed.`,
+  `After everything that had happened, they finally understood the truth. The strange events, the mysterious messages and the unexpected meetings were all connected.`,
+  `The experience changed both of them. They had learned to trust each other, question their assumptions and stay calm when things did not go according to plan.`,
+  `As they returned home, they talked about everything they had experienced. They laughed at some moments and remained silent about others. Neither wanted the day to end.`
+ ];
+
+ const dialogue={
+  A1:[
+   `"Look at this!" said ${hero}. "What is it?" asked ${friend}.`,
+   `"Are you afraid?" asked ${friend}. "A little, but we can do this together," answered ${hero}.`
+  ],
+  A2:[
+   `"This is not what I expected," said ${hero}. "Me neither. Something is definitely happening here," replied ${friend}.`,
+   `"We should be careful," said ${friend}. "Yes, but we must find out the truth," answered ${hero}.`
+  ],
+  B1:[
+   `"Something does not feel right," ${hero} admitted. "Then let's stop guessing and look for evidence," ${friend} replied.`,
+   `"What if we make a mistake?" asked ${friend}. "Then we learn from it. Doing nothing is also a choice," said ${hero}.`
+  ],
+  B2:[
+   `"We have two choices," ${friend} said. "We can walk away, or we can discover why someone wanted this hidden."`,
+   `"I thought I understood the situation," ${hero} replied. "Now I realise how much I had assumed without asking."`
+  ],
+  C1:[
+   `"The obvious explanation is probably the wrong one," ${hero} observed. "Agreed, but every theory needs evidence," ${friend} replied.`,
+   `"Perhaps the real question is not what happened," ${friend} said, "but why someone needed us to misunderstand it."`
+  ]
+ };
+
+ const shuffled=[...words].sort(()=>Math.random()-.5);
+ const paragraphs=[openings[level]||openings.B1];
+
+ paragraphs.push(
+  `The first unusual thing they discovered was ${plot.object}. It was hidden carefully, as if someone had wanted it to remain unnoticed.`
+ );
+
+ paragraphs.push(
+  `They looked at each other. Neither knew what to say. Something about the discovery suggested that this was not an accident.`
+ );
+
+ paragraphs.push(dialogue[level][0]);
+
+ paragraphs.push(
+  `They decided to investigate. At first, the clues seemed unrelated, but slowly they began to form a pattern.`
+ );
+
+ // Include every vocabulary word naturally in the story.
+ shuffled.forEach((item,index)=>{
+  const sentence=[
+   `${hero} noticed the word "${item.word}" in the old notes and wrote it down.`,
+   `Another message contained the word "${item.word}", which seemed important.`,
+   `The word "${item.word}" appeared in a sentence that gave them a new idea.`,
+   `${friend} repeated the word "${item.word}" while trying to understand the message.`,
+   `They found the word "${item.word}" on a page hidden at the back of the notebook.`
+  ][index%5];
+
+  paragraphs.push(sentence);
  });
 
- storyParts.push(endings[level]);
+ let sceneIndex=0;
+ let story=paragraphs.join("\n\n");
 
- const story=storyParts.join("\n\n");
+ while(story.split(/\s+/).length<target-100 && sceneIndex<scenes.length){
+  paragraphs.push(scenes[sceneIndex]);
+  if(sceneIndex===2||sceneIndex===6||sceneIndex===10){
+   paragraphs.push(dialogue[level][sceneIndex===2?1:0]);
+  }
+  sceneIndex++;
+  story=paragraphs.join("\n\n");
+ }
+
+ // Add extra developed scenes for the longest story options.
+ const extraScenes=[
+  `They stopped for a moment and examined their surroundings. The smallest details now seemed meaningful. They discussed different possibilities and tried to separate facts from imagination. It was important not to jump to conclusions.`,
+  `A memory suddenly came back to ${hero}. Something similar had happened years earlier, although the details had been forgotten. This memory provided a new way to understand the problem.`,
+  `The next few hours were full of difficult decisions. They made mistakes, corrected them and continued. Every failure taught them something useful about the situation.`,
+  `They also thought about the people who might be affected by their actions. It was no longer just about satisfying their curiosity. They had a responsibility to make the right decision.`,
+  `For a short time, everything seemed hopeless. Then ${friend} noticed that the situation was not as simple as it appeared. There was still one possibility they had not considered.`,
+  `They talked honestly about their fears. Neither wanted to appear weak, but both understood that pretending to be confident would not help. Their honesty made them stronger.`,
+  `When they finally reached the place they had been searching for, they found something completely unexpected. It was not what they had imagined, but it explained many of the strange events.`,
+  `The final decision was difficult. They could choose the easy option or do what they believed was right. After a long discussion, they agreed that some things were more important than personal comfort.`
+ ];
+
+ let extraIndex=0;
+
+ while(story.split(/\s+/).length<target && extraIndex<extraScenes.length){
+  paragraphs.push(extraScenes[extraIndex]);
+  extraIndex++;
+  story=paragraphs.join("\n\n");
+ }
+
+ paragraphs.push(
+  `${plot.ending}. ${hero} and ${friend} knew that they would remember this experience for the rest of their lives.`
+ );
+
+ paragraphs.push(
+  `On the way home, they understood something important: life does not always follow a plan. Sometimes the most meaningful experiences begin with an unexpected event, a difficult question or a decision that requires courage.`
+ );
+
+ story=paragraphs.join("\n\n");
 
  const gaps=shuffled.map(item=>{
-  const sentence=level==="A1"
-   ? `${name} read the word "${item.word}" in the notebook.`
-   : level==="A2"
-   ? `One page showed the word "${item.word}", which ${name} carefully wrote down.`
-   : level==="B1"
-   ? `The word "${item.word}" appeared in the notes, giving ${name} another detail to think about.`
-   : level==="B2"
-   ? `Among the notes, the word "${item.word}" stood out and helped ${name} understand the message more clearly.`
-   : `The appearance of the word "${item.word}" offered another small clue and encouraged ${name} to examine the notes more carefully.`;
-
+  const sentence=`${hero} noticed the word "${item.word}" in the old notes.`;
   return sentence.replace(item.word,"___")+" | "+item.word;
  });
 
- const title=listName||`${topic} — ${level} Story`;
+ const title=listName||`${topic} — ${genre} story`;
 
  $("lessonTitle").value=title;
  $("lessonLevel").value=level;
@@ -739,17 +942,24 @@ function generateStory(){
  $("generatorPreview").classList.remove("hidden");
  $("generatorPreview").innerHTML=
   '<div class="notice" style="margin-top:14px;">'+
-  '<b>Story generated successfully!</b><br>'+
-  'Level: '+safe(level)+' · Topic: '+safe(topic)+
+  '<b>Your story is ready!</b><br>'+
+  'Level: '+safe(level)+
+  '<br>Topic: '+safe(topic)+
+  '<br>Genre: '+safe(genre)+
+  '<br>Length: approximately '+story.split(/\s+/).length+' words'+
   '<br>Vocabulary words: '+words.length+
   '<br>Fill-in-the-gap tasks: '+gaps.length+
-  '<br><br>Review the generated lesson below and click Save lesson when ready.'+
+  '<br><br>Review your story below and click Save lesson when ready.'+
   '</div>';
 
  message("generatorMessage","Your story is ready!");
  $("formHeading").textContent="Review generated lesson";
- $("lessonTitle").scrollIntoView({behavior:"smooth",block:"center"});
+ $("lessonTitle").scrollIntoView({
+  behavior:"smooth",
+  block:"center"
+ });
 }
+
 
 function resetLessonForm(clearMessage=true){
  $("editingLessonId").value="";
