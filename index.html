@@ -268,6 +268,62 @@ p, label, .muted, .story {
  <section id="gaps" class="card tab-panel hidden"><div class="eyebrow">Test your knowledge</div><h2>Fill in the gaps</h2><p class="muted">Complete the sentences and check your answers.</p><div id="gapList" class="empty">Choose a lesson first.</div></section>
  <section id="teacher" class="card tab-panel hidden">
   <div class="eyebrow">Teacher workspace</div><h2 id="formHeading">Create a lesson</h2><p class="muted">Add a reading text, vocabulary and practice tasks.</p>
+  <div class="card" style="margin:20px 0;background:#f6f8f6;">
+  <div class="eyebrow">FREE STORY GENERATOR</div>
+  <h3>Create a new story</h3>
+  <p class="muted">Generate an English story using your vocabulary.</p>
+
+  <div class="grid">
+    <div class="field span-6">
+      <label>English level</label>
+      <select id="genLevel">
+        <option>A1</option>
+        <option>A2</option>
+        <option>B1</option>
+        <option>B2</option>
+        <option>C1</option>
+      </select>
+    </div>
+
+    <div class="field span-6">
+      <label>Story topic</label>
+      <select id="genTopic">
+        <option>Friendship</option>
+        <option>Family</option>
+        <option>Animals</option>
+        <option>Travel</option>
+        <option>Adventure</option>
+        <option>Love and relationships</option>
+        <option>School and education</option>
+        <option>Work and career</option>
+        <option>Food and cooking</option>
+        <option>Health and lifestyle</option>
+        <option>Nature</option>
+        <option>Mystery</option>
+        <option>Technology</option>
+        <option>Daily life</option>
+        <option>Personal development</option>
+      </select>
+    </div>
+
+    <div class="field span-12">
+      <label>Vocabulary list name</label>
+      <input id="genListName" placeholder="Example: Words from the text Cat">
+    </div>
+
+    <div class="field span-12">
+      <label>New words — English = Russian, one per line</label>
+      <textarea id="genWords" placeholder="curious = любопытный&#10;forest = лес&#10;discover = обнаружить"></textarea>
+    </div>
+  </div>
+
+  <button class="btn primary" onclick="generateStory()">
+    ✨ Generate story
+  </button>
+
+  <div id="generatorMessage" class="message"></div>
+  <div id="generatorPreview" class="hidden"></div>
+</div>
   <input id="editingLessonId" type="hidden">
   <div class="grid">
    <div class="field span-6"><label>Lesson title *</label><input id="lessonTitle" placeholder="Example: My Cat"></div>
@@ -559,6 +615,140 @@ async function saveLesson(){
  message("teacherMessage",id?"Lesson updated successfully!":"Lesson created successfully!");
  resetLessonForm(false);
  await loadLessons();
+}
+ let generatedStoryData=null;
+
+function generateStory(){
+
+ const level=$("genLevel").value;
+ const topic=$("genTopic").value;
+ const listName=$("genListName").value.trim();
+ const rawWords=$("genWords").value;
+
+ const words=rawWords.split("\n")
+  .map(line=>{
+   const p=line.split("=");
+   return {
+    word:(p[0]||"").trim(),
+    translation:(p.slice(1).join("=")||"").trim()
+   };
+  })
+  .filter(w=>w.word&&w.translation);
+
+ if(!words.length){
+  message("generatorMessage","Please add at least one word with its translation.");
+  return;
+ }
+
+ const names=["Emma","Oliver","Mia","Leo","Sophie","Jack"];
+ const places={
+  Friendship:"a small town",
+  Family:"a family home",
+  Animals:"a beautiful forest",
+  Travel:"a new city",
+  Adventure:"a mysterious place",
+  "Love and relationships":"a quiet little cafe",
+  "School and education":"a new school",
+  "Work and career":"a busy office",
+  "Food and cooking":"a small restaurant",
+  "Health and lifestyle":"a peaceful village",
+  Nature:"a green forest",
+  Mystery:"an old house",
+  Technology:"a modern city",
+  "Daily life":"a quiet neighborhood",
+  "Personal development":"a beautiful town"
+ };
+
+ const name=names[Math.floor(Math.random()*names.length)];
+ const place=places[topic]||"a new place";
+
+ const openings={
+  A1:`One day, ${name} went to ${place}. It was a special morning. ${name} wanted to discover something new.`,
+  A2:`Last weekend, ${name} visited ${place}. At first, everything seemed ordinary, but soon an interesting situation began.`,
+  B1:`When ${name} arrived at ${place}, there was something unusual in the air. A small discovery soon turned into an unforgettable experience.`,
+  B2:`Although ${name} had visited ${place} before, this time everything felt different. An unexpected event changed the plans for the day.`,
+  C1:`What began as an ordinary visit to ${place} gradually developed into an experience that challenged ${name}'s expectations and changed the way they saw the world.`
+ };
+
+ const middle={
+  A1:`There, ${name} found a small notebook. It had many interesting words inside.`,
+  A2:`While exploring the area, ${name} discovered a notebook. It contained several unfamiliar words and a surprising message.`,
+  B1:`During the visit, ${name} came across an old notebook. Each page contained a new clue, and curiosity made it impossible to stop reading.`,
+  B2:`While looking around, ${name} discovered a notebook filled with unusual notes. Each new page revealed another detail about the place.`,
+  C1:`Among the things left behind, ${name} discovered a notebook whose unusual notes suggested that the place had a much more interesting history than anyone had imagined.`
+ };
+
+ const endings={
+  A1:`At the end of the day, ${name} felt happy. It was a wonderful adventure, and there was still much to learn.`,
+  A2:`By the end of the day, ${name} understood that even a simple journey could become a memorable adventure.`,
+  B1:`Eventually, everything became clear. ${name} returned home with new knowledge and a story worth sharing.`,
+  B2:`By the time the day was over, ${name} had learned an important lesson: unexpected experiences can bring valuable discoveries.`,
+  C1:`Looking back, ${name} realised that the most meaningful discoveries often happen when people remain curious and open to unfamiliar experiences.`
+ };
+
+ const shuffled=[...words].sort(()=>Math.random()-0.5);
+
+ const storyParts=[
+  openings[level],
+  middle[level]
+ ];
+
+ shuffled.forEach((item,index)=>{
+  const sentence=level==="A1"
+   ? `${name} read the word "${item.word}" in the notebook.`
+   : level==="A2"
+   ? `One page showed the word "${item.word}", which ${name} carefully wrote down.`
+   : level==="B1"
+   ? `The word "${item.word}" appeared in the notes, giving ${name} another detail to think about.`
+   : level==="B2"
+   ? `Among the notes, the word "${item.word}" stood out and helped ${name} understand the message more clearly.`
+   : `The appearance of the word "${item.word}" offered another small clue and encouraged ${name} to examine the notes more carefully.`;
+
+  storyParts.push(sentence);
+ });
+
+ storyParts.push(endings[level]);
+
+ const story=storyParts.join("\n\n");
+
+ const gaps=shuffled.map(item=>{
+  const sentence=level==="A1"
+   ? `${name} read the word "${item.word}" in the notebook.`
+   : level==="A2"
+   ? `One page showed the word "${item.word}", which ${name} carefully wrote down.`
+   : level==="B1"
+   ? `The word "${item.word}" appeared in the notes, giving ${name} another detail to think about.`
+   : level==="B2"
+   ? `Among the notes, the word "${item.word}" stood out and helped ${name} understand the message more clearly.`
+   : `The appearance of the word "${item.word}" offered another small clue and encouraged ${name} to examine the notes more carefully.`;
+
+  return sentence.replace(item.word,"___")+" | "+item.word;
+ });
+
+ const title=listName||`${topic} — ${level} Story`;
+
+ $("lessonTitle").value=title;
+ $("lessonLevel").value=level;
+ $("lessonTopic").value=topic;
+ $("lessonStory").value=story;
+ $("lessonWords").value=words.map(w=>
+  w.word+" = "+w.translation
+ ).join("\n");
+ $("lessonGaps").value=gaps.join("\n");
+
+ $("generatorPreview").classList.remove("hidden");
+ $("generatorPreview").innerHTML=
+  '<div class="notice" style="margin-top:14px;">'+
+  '<b>Story generated successfully!</b><br>'+
+  'Level: '+safe(level)+' · Topic: '+safe(topic)+
+  '<br>Vocabulary words: '+words.length+
+  '<br>Fill-in-the-gap tasks: '+gaps.length+
+  '<br><br>Review the generated lesson below and click Save lesson when ready.'+
+  '</div>';
+
+ message("generatorMessage","Your story is ready!");
+ $("formHeading").textContent="Review generated lesson";
+ $("lessonTitle").scrollIntoView({behavior:"smooth",block:"center"});
 }
 
 function resetLessonForm(clearMessage=true){
