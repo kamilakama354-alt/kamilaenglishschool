@@ -335,6 +335,18 @@ p, label, .muted, .story {
 </div>
 
     <div class="field span-12">
+  <label>Vocabulary size</label>
+  <select id="genVocab">
+    <option value="">Auto (by level)</option>
+    <option value="500">~500 words</option>
+    <option value="800">~800 words</option>
+    <option value="1200">~1,200 words</option>
+    <option value="2000">~2,000 words</option>
+    <option value="3000">~3,000 words</option>
+  </select>
+</div>
+
+    <div class="field span-12">
   <label>Vocabulary list name</label>
   <input id="genListName" placeholder="Example: Words from the text Cat">
 </div>
@@ -653,6 +665,7 @@ async function generateStory(){
  const topic=$("genTopic").value;
  const genre=$("genGenre").value;
  const length=$("genLength").value;
+ const vocabSize=$("genVocab")?.value||"";
  const listName=$("genListName").value.trim();
  const rawWords=$("genWords").value;
 
@@ -680,7 +693,7 @@ async function generateStory(){
  try{
   const {data,error}=await db.functions.invoke("generate-story",{
    body:{
-    level,topic,genre,length,listName,wordsText:rawWords
+    level,topic,genre,length,vocabSize,listName,wordsText:rawWords
    }
   });
 
