@@ -89,16 +89,17 @@ border-radius:999px;padding:10px 16px;color:#607184;font-weight:650}
 .tab.active{background:var(--ink);border-color:var(--ink);color:white}
 .toolbar{display:grid;grid-template-columns:minmax(180px,1.5fr) repeat(2,minmax(130px,.7fr));
 gap:10px;margin:16px 0}
-.lesson-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.lesson-card{border:1px solid var(--line);border-radius:17px;padding:18px;
-background:#fff;display:flex;flex-direction:column;min-height:190px}
-.lesson-card h3{margin:10px 0 7px;font-size:20px}
-.lesson-card p{margin:0 0 12px}
+.lesson-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.lesson-card{border:1px solid var(--line);border-radius:15px;padding:13px;
+background:#fff;display:flex;flex-direction:column;min-height:120px}
+.lesson-card h3{margin:8px 0 5px;font-size:17px}
+.lesson-card p{margin:0 0 8px}
 .pill{display:inline-flex;align-items:center;background:var(--blue);
 color:#4d657c;padding:5px 9px;border-radius:999px;font-size:11px;
 font-weight:700;width:max-content}
 .pill.sage{background:var(--sage);color:#55715e}
-.lesson-card .actions{margin-top:auto}
+.lesson-card .actions{margin-top:auto;padding-top:4px}
+.lesson-card .btn.smallbtn{padding:7px 10px;font-size:12.5px}
 .empty{padding:28px;text-align:center;color:var(--muted);
 background:#fafcfb;border:1px dashed #dce6e0;border-radius:15px}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
@@ -717,7 +718,6 @@ async function generateStory(){
    '</div>';
 
   message("generatorMessage","Your AI story is ready!");
-  $("formHeading").textContent="Review generated lesson";
   $("lessonTitle").scrollIntoView({behavior:"smooth",block:"center"});
 
  }catch(error){
