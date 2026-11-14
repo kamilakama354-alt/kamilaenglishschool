@@ -647,8 +647,8 @@ async function saveLesson(){
  let generatedStoryData=null;
 
 
-function generateStory(){
 
+async function generateStory(){
  const level=$("genLevel").value;
  const topic=$("genTopic").value;
  const genre=$("genGenre").value;
@@ -668,325 +668,76 @@ function generateStory(){
   message("generatorMessage","Please enter at least 3 vocabulary words with translations.");
   return;
  }
-
- if(words.length>35){
-  message("generatorMessage","Please use no more than 35 words at a time.");
+ if(words.length>30){
+  message("generatorMessage","Please use no more than 30 words.");
   return;
  }
 
- const lengths={
-  short:400,
-  medium:700,
-  long:1000,
-  epic:1300
- };
+ const button=document.querySelector('[onclick="generateStory()"]');
+ if(button)button.disabled=true;
+ message("generatorMessage","AI is writing your story. Please wait...");
 
- const target=lengths[length]||700;
+ try{
+  const {data,error}=await db.functions.invoke("generate-story",{
+   body:{
+    level,topic,genre,length,listName,wordsText:rawWords
+   }
+  });
 
- const characters=[
-  ["Mia","Leo"],
-  ["Emma","Oliver"],
-  ["Sophie","Daniel"],
-  ["Amira","Noah"],
-  ["Lily","Alex"],
-  ["Sofia","Theo"]
- ];
-
- const pair=characters[Math.floor(Math.random()*characters.length)];
- const hero=pair[0];
- const friend=pair[1];
-
- const places={
-  Friendship:"a quiet seaside town",
-  Family:"an old family house",
-  Animals:"a mysterious forest",
-  Travel:"a beautiful city abroad",
-  Adventure:"a remote mountain village",
-  "Love and relationships":"a little café in the city",
-  "School and education":"an unusual old school",
-  "Work and career":"a modern creative company",
-  "Food and cooking":"a famous family restaurant",
-  "Health and lifestyle":"a peaceful village",
-  Nature:"a forest beside a deep lake",
-  Mystery:"an abandoned hotel",
-  Technology:"a secret research laboratory",
-  "Daily life":"a quiet neighbourhood",
-  "Personal development":"a town full of opportunities"
- };
-
- const place=places[topic]||"an unusual place";
-
- const plots={
-  mystery:{
-   title:"The Secret Behind the Locked Door",
-   object:"a small silver key inside an old envelope",
-   secret:"someone had been leaving secret messages around the town",
-   twist:"the person they were searching for was someone they already knew",
-   climax:"they discovered a hidden room filled with photographs, letters and a diary",
-   ending:"they finally understood the mystery, but one last message suggested that another secret remained"
-  },
-  adventure:{
-   title:"The Map That Changed Everything",
-   object:"an old map with a red cross in the mountains",
-   secret:"the map showed a place that did not exist on any modern map",
-   twist:"the treasure was not gold, but something far more valuable",
-   climax:"a dangerous storm forced them to make the most difficult decision of their journey",
-   ending:"they returned home exhausted but proud, knowing that the greatest reward had been the journey itself"
-  },
-  fantasy:{
-   title:"The Kingdom Beyond the Stars",
-   object:"a silver key that began to shine in the dark",
-   secret:"the key opened a door to a world that ordinary people could not see",
-   twist:"their new friend was actually the guardian of a forgotten kingdom",
-   climax:"they had to choose between returning home and protecting a magical world",
-   ending:"the magic returned, and they discovered that courage and kindness were more powerful than any spell"
-  },
-  romance:{
-   title:"The Letter Never Sent",
-   object:"an old letter that had never been delivered",
-   secret:"two people had been waiting years to tell each other the truth",
-   twist:"one misunderstanding had changed several lives",
-   climax:"they finally met and had the honest conversation they had avoided for years",
-   ending:"they realised that trust and honest communication could create a new beginning"
-  },
-  drama:{
-   title:"The Photograph",
-   object:"an old photograph with one person missing",
-   secret:"the family had been hiding an important story for many years",
-   twist:"the person everyone blamed had actually made a great sacrifice",
-   climax:"they finally confronted the truth and shared feelings they had kept inside",
-   ending:"their problems did not disappear overnight, but they began to understand one another"
-  },
-  survival:{
-   title:"The Last Signal",
-   object:"a radio sending a weak signal from the mountains",
-   secret:"another group of people was trapped nearby",
-   twist:"the only way to save themselves was to help someone else first",
-   climax:"they faced freezing weather, limited supplies and one final dangerous obstacle",
-   ending:"they reached safety together and never forgot what teamwork had taught them"
-  },
-  comedy:{
-   title:"The Most Unusual Day",
-   object:"a suitcase that seemed to contain something different every time it opened",
-   secret:"a series of ridiculous misunderstandings had started with one tiny mistake",
-   twist:"the person causing all the confusion had been planning a surprise",
-   climax:"the entire town became involved in the funniest event anyone could remember",
-   ending:"everyone laughed about the disaster, which unexpectedly became the best day of the year"
-  },
-  scifi:{
-   title:"A Message from Tomorrow",
-   object:"a small machine that could show possible futures",
-   secret:"the machine had been sending warnings about an event that had not happened yet",
-   twist:"the future changed every time someone tried to control it",
-   climax:"they had only a few minutes to stop a dangerous chain reaction",
-   ending:"they saved the day and learned that the future depends on the choices people make today"
-  },
-  inspiring:{
-   title:"The Impossible Challenge",
-   object:"an invitation to take part in a competition everyone considered impossible",
-   secret:"the main character had a talent they had never believed in",
-   twist:"their biggest critic had secretly been inspired by their efforts",
-   climax:"they had to overcome their fear and perform in front of a huge audience",
-   ending:"they discovered that success was not about being perfect, but about refusing to give up"
-  },
-  horror:{
-   title:"The House That Remembered",
-   object:"a music box that played by itself every night",
-   secret:"the house had been empty for thirty years, but someone was still leaving fresh footprints",
-   twist:"the frightening sounds were warnings about a hidden danger",
-   climax:"they entered the darkest room and discovered what had happened there",
-   ending:"they escaped before sunrise, but the music box began playing again the following night"
+  if(error){
+   let detail=error.message||"Function request failed.";
+   if(error.context){
+    try{
+     const body=await error.context.json();
+     if(body.error)detail=body.error;
+    }catch(e){}
+   }
+   throw new Error(detail);
   }
- };
 
- const plot=plots[genre]||plots.mystery;
-
- const language={
-  A1:{
-   opening:`One evening, ${hero} and ${friend} went to ${place}. They wanted to enjoy a normal day. They did not know that something strange was waiting for them.`,
-   style:"They looked at each other. They were surprised. They did not know what to do.",
-   dialogue:[
-    `"Look at this!" said ${hero}. "What is it?" asked ${friend}.`,
-    `"Are you afraid?" asked ${friend}. "A little, but we can do this together," said ${hero}.`
-   ]
-  },
-  A2:{
-   opening:`When ${hero} and ${friend} arrived at ${place}, they expected an ordinary day. However, they soon noticed something unusual.`,
-   style:"They looked carefully at everything around them. They wanted to understand what was happening.",
-   dialogue:[
-    `"This is not what I expected," said ${hero}. "Me neither," replied ${friend}.`,
-    `"We should be careful," said ${friend}. "Yes, but we must find out the truth," answered ${hero}.`
-   ]
-  },
-  B1:{
-   opening:`It was supposed to be a normal day for ${hero} and ${friend}. But their visit to ${place} quickly turned into an unforgettable experience.`,
-   style:"They tried to understand the situation, but every new discovery created another question.",
-   dialogue:[
-    `"Something does not feel right," ${hero} admitted. "Then let's look for evidence," ${friend} replied.`,
-    `"What if we make a mistake?" asked ${friend}. "Then we learn from it," said ${hero}.`
-   ]
-  },
-  B2:{
-   opening:`Neither ${hero} nor ${friend} could have imagined what awaited them at ${place}. One unexpected discovery was about to change everything they believed.`,
-   style:"They examined the evidence carefully, knowing that one wrong decision could make the situation much worse.",
-   dialogue:[
-    `"We have two choices," said ${friend}. "We can walk away, or discover why someone wanted this hidden."`,
-    `"I thought I understood the situation," replied ${hero}. "Now I realise how much I had assumed."`
-   ]
-  },
-  C1:{
-   opening:`What began as an ordinary visit to ${place} soon developed into an extraordinary experience that challenged everything ${hero} thought they knew.`,
-   style:"They considered several explanations, but none of them fully accounted for the evidence they had discovered.",
-   dialogue:[
-    `"The obvious explanation is probably the wrong one," ${hero} observed. "Every theory still needs evidence," replied ${friend}.`,
-    `"Perhaps the real question is not what happened," said ${friend}, "but why someone needed us to misunderstand it."`
-   ]
+  if(!data||!data.story||!Array.isArray(data.vocabulary)||!Array.isArray(data.gaps)){
+   throw new Error(data?.error||"Incomplete AI response.");
   }
- };
 
- const lang=language[level]||language.B1;
- const paragraphs=[];
+  const title=data.title||listName||"New story";
 
- paragraphs.push(lang.opening);
+  $("lessonTitle").value=title;
+  $("lessonLevel").value=level;
+  $("lessonTopic").value=topic;
+  $("lessonStory").value=data.story;
+  $("lessonWords").value=data.vocabulary.map(v=>
+   v.word+" = "+v.translation
+  ).join("\n");
+  $("lessonGaps").value=data.gaps.map(g=>
+   g.sentence+" | "+g.answer
+  ).join("\n");
 
- paragraphs.push(
-  `The first unusual thing they discovered was ${plot.object}. It had been carefully hidden, as if someone wanted to make sure nobody would ever find it.`
- );
+  $("generatorPreview").classList.remove("hidden");
+  $("generatorPreview").innerHTML=
+   '<div class="notice" style="margin-top:14px;">'+
+   '<b>Your AI story is ready!</b><br>'+
+   'Title: '+safe(title)+
+   '<br>Level: '+safe(level)+
+   '<br>Topic: '+safe(topic)+
+   '<br>Genre: '+safe(genre)+
+   '<br>Words: '+data.story.trim().split(/\s+/).length+
+   '<br>Vocabulary: '+data.vocabulary.length+
+   '<br>Exercises: '+data.gaps.length+
+   '<br><br>Review the lesson and click Save lesson when ready.'+
+   '</div>';
 
- paragraphs.push(
-  `At first, ${hero} thought it was a joke. But ${friend} noticed something strange. There was a small symbol on the object, and the same symbol appeared on a nearby wall.`
- );
+  message("generatorMessage","Your AI story is ready!");
+  $("formHeading").textContent="Review generated lesson";
+  $("lessonTitle").scrollIntoView({behavior:"smooth",block:"center"});
 
- paragraphs.push(lang.dialogue[0]);
-
- paragraphs.push(
-  `They decided to investigate. The place seemed completely ordinary from the outside, but the closer they looked, the more unusual details they noticed. ${lang.style}`
- );
-
- paragraphs.push(
-  `A few minutes later, they found a second clue. It was a handwritten note with a date and a short message. The handwriting looked familiar, although neither of them could remember where they had seen it before.`
- );
-
- // Add the vocabulary in the story.
- const shuffled=[...words].sort(()=>Math.random()-.5);
-
- shuffled.forEach((item,index)=>{
-  const examples=[
-   `${hero} noticed the word "${item.word}" in the old notes and carefully wrote it down.`,
-   `Another message contained the word "${item.word}". It seemed to be an important part of the puzzle.`,
-   `The word "${item.word}" appeared again, this time beside a small drawing.`,
-   `${friend} repeated the word "${item.word}" while trying to understand the message.`,
-   `They found the word "${item.word}" on a page hidden at the back of the notebook.`
-  ];
-
-  paragraphs.push(examples[index%examples.length]);
- });
-
- const chapters=[
-  `Suddenly, a sound came from the other side of the room. It was quiet at first, almost impossible to hear. Then it happened again. ${hero} turned towards the door, while ${friend} slowly stepped back. Neither of them wanted to admit that they were frightened.`,
-  `They found an old notebook nearby. Several pages were missing, and the remaining ones contained unusual notes. Some words had been underlined, while others were written in a different handwriting. The last page contained a date that was only a few days away.`,
-  `As they continued, the situation became more complicated. Their first explanation no longer made sense. Someone had clearly planned these events, but the reason remained a mystery. They began to wonder whether they were being watched.`,
-  `${hero} wanted to make a quick decision, but ${friend} disagreed. They discussed the risks and considered what might happen if they were wrong. In the end, they decided that working together was their best chance.`,
-  `Outside, the weather suddenly changed. Dark clouds covered the sky, and a strong wind moved through the streets. They had very little time to decide what to do next. The note suggested that the next clue was somewhere nearby.`,
-  `A new discovery connected two events that had seemed completely unrelated. Suddenly, the story began to make sense. However, one important question remained unanswered: who had started everything, and why?`,
-  `They discovered that ${plot.secret}. This changed everything. What had seemed like a simple problem was actually part of something much bigger. They realised that the truth might affect more people than they had first imagined.`,
-  `For the first time, they began to doubt whether they should continue. They were tired, confused and worried about the consequences. Still, they knew they could not simply ignore what they had discovered.`,
-  `Then came an unexpected revelation: ${plot.twist}. Neither of them spoke for several seconds. They had to reconsider everything they believed about the situation.`,
-  `They made a plan. It was not perfect, but it was their only chance. They divided the responsibilities, checked every detail and promised to stay together. They knew that the next decision could change everything.`,
-  `The most difficult moment arrived just before sunset. ${plot.climax}. Their hearts were beating fast, but they refused to give up. Every second seemed longer than the last.`,
-  `At the last moment, ${hero} noticed something that everyone else had missed. It was a small detail, almost invisible, but it gave them the answer they needed. Suddenly, the final pieces of the puzzle began to fit together.`,
-  `They stopped and looked at each other. For the first time that day, they understood what they had to do. It was not the easiest choice, and it would require courage. But they both knew that it was the right thing to do.`,
-  `After everything that had happened, they finally understood the truth. The strange events, the mysterious messages and the unexpected meetings were all connected. Nothing had happened by accident.`,
-  `The experience changed both of them. They had learned to trust each other, question their assumptions and stay calm when things did not go according to plan.`,
-  `As they returned home, they talked about everything they had experienced. They laughed at some moments and remained silent about others. Neither wanted the day to end.`
- ];
-
- const extraChapters=[
-  `Later, they sat down and tried to put all the information in the correct order. They compared the dates, read the messages again and discussed every possible explanation. One small mistake could lead them in the wrong direction, so they checked everything twice.`,
-  `A memory suddenly came back to ${hero}. Something similar had happened years earlier, although the details had almost been forgotten. This memory provided a new way to understand the problem and helped them notice an important connection.`,
-  `The next few hours were full of difficult decisions. They made mistakes, corrected them and continued. Every failure taught them something useful. They began to understand that solving a difficult problem required patience as well as courage.`,
-  `They also thought about the people who might be affected by their actions. It was no longer just about satisfying their curiosity. They had a responsibility to make the right decision, even if the truth was uncomfortable.`,
-  `For a short time, everything seemed hopeless. Then ${friend} noticed that the situation was not as simple as it appeared. There was still one possibility they had not considered. They decided to try again, even though they were not certain it would work.`,
-  `They talked honestly about their fears. Neither wanted to appear weak, but both understood that pretending to be confident would not help. Their honesty made them stronger, and they began to trust each other more than before.`,
-  `When they finally reached the place they had been searching for, they found something completely unexpected. It was not what they had imagined, but it explained many of the strange events. The answer was closer than they had ever expected.`,
-  `The final decision was difficult. They could choose the easy option or do what they believed was right. After a long discussion, they agreed that some things were more important than personal comfort.`,
-  `Before leaving, they looked around one last time. The place seemed different now. What had once appeared frightening had become a reminder of how much they had learned. They promised not to forget the people and events that had brought them there.`,
-  `On the way home, they discussed what might have happened if they had made a different choice. They realised that even a small decision could change an entire chain of events. Neither of them would look at an ordinary day in quite the same way again.`
- ];
-
- paragraphs.push(lang.dialogue[1]);
-
- let story=paragraphs.join("\n\n");
- let chapterIndex=0;
-
- while(
-  story.split(/\s+/).length<target-100 &&
-  chapterIndex<chapters.length
- ){
-  paragraphs.push(chapters[chapterIndex]);
-  story=paragraphs.join("\n\n");
-  chapterIndex++;
+ }catch(error){
+  console.error("Story generation error:",error);
+  message("generatorMessage","Generation failed: "+error.message);
+ }finally{
+  if(button)button.disabled=false;
  }
-
- let extraIndex=0;
-
- while(
-  story.split(/\s+/).length<target &&
-  extraIndex<extraChapters.length
- ){
-  paragraphs.push(extraChapters[extraIndex]);
-  story=paragraphs.join("\n\n");
-  extraIndex++;
- }
-
- paragraphs.push(
-  `${plot.ending}. ${hero} and ${friend} knew that they would remember this experience for the rest of their lives.`
- );
-
- paragraphs.push(
-  `On the way home, they understood something important: life does not always follow a plan. Sometimes the most meaningful experiences begin with an unexpected event, a difficult question or a decision that requires courage.`
- );
-
- story=paragraphs.join("\n\n");
-
- const gaps=shuffled.map(item=>{
-  const sentence=`${hero} noticed the word "${item.word}" in the old notes.`;
-  return sentence.replace(item.word,"___")+" | "+item.word;
- });
-
- const title=listName||plot.title;
-
- $("lessonTitle").value=title;
- $("lessonLevel").value=level;
- $("lessonTopic").value=topic;
- $("lessonStory").value=story;
- $("lessonWords").value=words.map(w=>
-  w.word+" = "+w.translation
- ).join("\n");
- $("lessonGaps").value=gaps.join("\n");
-
- $("generatorPreview").classList.remove("hidden");
- $("generatorPreview").innerHTML=
-  '<div class="notice" style="margin-top:14px;">'+
-  '<b>Your story is ready!</b><br>'+
-  'Title: '+safe(title)+
-  '<br>Level: '+safe(level)+
-  '<br>Topic: '+safe(topic)+
-  '<br>Genre: '+safe(genre)+
-  '<br>Length: approximately '+story.split(/\s+/).length+' words'+
-  '<br>Vocabulary words: '+words.length+
-  '<br>Fill-in-the-gap tasks: '+gaps.length+
-  '<br><br>Review your story below and click Save lesson when ready.'+
-  '</div>';
-
- message("generatorMessage","Your story is ready!");
- $("formHeading").textContent="Review generated lesson";
-
- $("lessonTitle").scrollIntoView({
-  behavior:"smooth",
-  block:"center"
- });
 }
+
 
 
 function resetLessonForm(clearMessage=true){
