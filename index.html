@@ -3,1056 +3,234 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f7f9f7">
+<meta name="theme-color" content="#2f4a37">
 <title>KAMILA ENGLISH SCHOOL</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{
- --ink:#24384b;--muted:#718092;--paper:#f6f8f6;--white:#fff;
- --blue:#e8f0fa;--blue2:#d7e5f4;--sage:#e5eee7;--sage2:#d4e3d8;
- --line:#e6ece8;--accent:#36536d;--danger:#a84d4d;
- --shadow:0 12px 35px rgba(36,56,75,.07);--radius:20px;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--paper);color:var(--ink);
-font-family:"DM Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-font-size:15px;font-weight:400;letter-spacing:.08px}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-.topbar{background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);
-position:sticky;top:0;z-index:20;backdrop-filter:blur(14px)}
-.topbar-inner{max-width:1180px;margin:auto;padding:15px 24px;
-display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:flex;align-items:center;gap:12px;min-width:0}
-.brand-mark{width:42px;height:42px;border-radius:14px;background:var(--ink);
-color:white;display:grid;place-items:center;font-family:Georgia,serif;font-size:20px}
-.brand h1{font:500 17px "Playfair Display",Georgia,serif;
-letter-spacing:.2px;margin:0}
-.brand p{margin:4px 0 0;color:var(--muted);font-size:12px}
-main{max-width:1180px;margin:28px auto;padding:0 24px 50px}
-.card{background:var(--white);border:1px solid var(--line);
-border-radius:var(--radius);padding:23px;box-shadow:var(--shadow);margin-bottom:18px}
-h2,h3{font-family:"Playfair Display",Georgia,"Times New Roman",serif;
-font-weight:500;letter-spacing:-.25px}
-h2{font-size:26px;margin:0 0 8px}
-h3{font-size:20px;margin:0 0 12px}
-p{line-height:1.6}
-.muted{color:var(--muted)}
-.small{font-size:13px}
-.eyebrow{text-transform:uppercase;letter-spacing:1.5px;font-size:10px;
-font-weight:700;color:#82918c}
-.hero{background:linear-gradient(120deg,#edf3fa,#f1f6f1);
-border:1px solid #e4ece9;border-radius:24px;padding:28px;margin-bottom:20px;
-display:flex;justify-content:space-between;gap:20px;align-items:center}
-.hero h2{font-size:30px;margin:8px 0}
-.hero p{margin:0;color:#647486;max-width:580px}
-.hero-icon{width:86px;height:86px;border-radius:26px;
-background:rgba(255,255,255,.65);display:grid;place-items:center;
-font-size:38px;flex:none}
-.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
-.span-12{grid-column:span 12}
-.span-8{grid-column:span 8}
-.span-6{grid-column:span 6}
-.span-4{grid-column:span 4}
-label{display:block;font-size:13px;font-weight:650;margin:5px 0 7px;color:#526477}
-input,textarea,select{width:100%;border:1px solid #dfe7e3;border-radius:12px;
-padding:13px 14px;background:#fff;color:var(--ink);outline:none;transition:.2s}
-input:focus,textarea:focus,select:focus{border-color:#9eb7cc;box-shadow:0 0 0 3px #e8f0fa}
-textarea{min-height:125px;resize:vertical;line-height:1.55}
-.field{margin-bottom:14px}
-.btn{border:0;border-radius:12px;padding:11px 16px;background:var(--sage);
-color:var(--ink);font-weight:650;transition:.18s;display:inline-flex;
-align-items:center;justify-content:center;gap:7px}
-.btn:hover{transform:translateY(-1px);filter:brightness(.98)}
-.btn.primary{background:var(--ink);color:white}
-.btn.softblue{background:var(--blue)}
-.btn.danger{background:#faeeee;color:var(--danger)}
-.btn.ghost{background:transparent;border:1px solid var(--line)}
-.btn.smallbtn{padding:8px 11px;font-size:13px}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.auth-wrap{max-width:480px;margin:45px auto}
-.auth-brand{text-align:center;margin-bottom:22px}
-.auth-brand .brand-mark{margin:0 auto 12px;width:56px;height:56px;font-size:25px}
-.auth-brand h1{font:500 28px "Playfair Display",Georgia,serif;margin:0}
-.auth-brand p{color:var(--muted);margin:8px 0}
-.auth-card{padding:30px}
-.tabs{display:flex;gap:7px;overflow-x:auto;padding:5px 0 14px;
-margin-bottom:12px;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{white-space:nowrap;border:1px solid var(--line);background:white;
-border-radius:999px;padding:10px 16px;color:#607184;font-weight:650}
-.tab.active{background:var(--ink);border-color:var(--ink);color:white}
-.toolbar{display:grid;grid-template-columns:minmax(180px,1.5fr) repeat(2,minmax(130px,.7fr));
-gap:10px;margin:16px 0}
-.lesson-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
-.lesson-card{border:1px solid var(--line);border-radius:15px;padding:13px;
-background:#fff;display:flex;flex-direction:column;min-height:120px}
-.lesson-card h3{margin:8px 0 5px;font-size:17px}
-.lesson-card p{margin:0 0 8px}
-.pill{display:inline-flex;align-items:center;background:var(--blue);
-color:#4d657c;padding:5px 9px;border-radius:999px;font-size:11px;
-font-weight:700;width:max-content}
-.pill.sage{background:var(--sage);color:#55715e}
-.lesson-card .actions{margin-top:auto;padding-top:4px}
-.lesson-card .btn.smallbtn{padding:7px 10px;font-size:12.5px}
-.empty{padding:28px;text-align:center;color:var(--muted);
-background:#fafcfb;border:1px dashed #dce6e0;border-radius:15px}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
-.stat{background:linear-gradient(145deg,#f3f7fb,#f3f7f3);
-border:1px solid var(--line);padding:17px;border-radius:16px}
-.stat strong{font:500 27px "Playfair Display",Georgia,serif;display:block;margin-top:6px}
-.lesson-reader{background:#fbfcfb;border:1px solid var(--line);
-border-radius:16px;padding:22px;margin-top:15px}
-.story{white-space:pre-wrap;line-height:1.9;font-size:17px;color:#34495d}
-.word-row,.gap-row{padding:13px 15px;background:#f6f9f7;
-border:1px solid #edf1ee;border-radius:12px;margin:9px 0}
-.word-row b{color:#2e4b62}
-.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
-table{width:100%;border-collapse:collapse;min-width:680px;background:white}
-th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line);font-size:13px}
-th{background:#f5f8f6;color:#637487;font-weight:700}
-tr:last-child td{border-bottom:0}
-.notice{padding:12px 14px;background:var(--blue);border-radius:12px;
-color:#526a80;margin:12px 0}
-.message{font-size:13px;color:var(--muted);min-height:20px;margin:10px 0 0}
-.hidden{display:none!important}
-.checkline{display:flex;align-items:center;gap:9px;margin:10px 0}
-.checkline input{width:auto;margin:0}
-footer{text-align:center;color:#8a98a3;font-size:12px;padding:25px}
-.mobile-user{display:flex;align-items:center;gap:10px}
-.user-dot{width:34px;height:34px;border-radius:50%;background:var(--sage);
-display:grid;place-items:center;font-weight:700}
-.reader-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
-@media(max-width:850px){
- .lesson-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
- .span-8,.span-4{grid-column:span 12}
- .span-6{grid-column:span 6}
-}
-@media(max-width:600px){
- .topbar-inner{padding:12px 15px}
- .brand h1{font-size:14px}
- .brand p{font-size:11px}
- main{padding:0 14px 35px;margin:17px auto}
- .card{padding:17px;border-radius:17px}
- .hero{padding:20px;border-radius:19px}
- .hero h2{font-size:25px}
- .hero-icon{width:55px;height:55px;font-size:26px;border-radius:18px}
- .lesson-grid{grid-template-columns:1fr}
- .toolbar{grid-template-columns:1fr 1fr}
- .toolbar input{grid-column:span 2}
- .stats{grid-template-columns:1fr 1fr}
- .stat:last-child{grid-column:span 2}
- h2{font-size:23px}
- .story{font-size:16px}
- .auth-wrap{margin:25px auto}
- .auth-card{padding:22px}
- .btn{padding:11px 13px}
- .tabs{margin-right:-14px;padding-right:14px}
-}
-/* KAMILA ENGLISH SCHOOL — TYPOGRAPHY */
-
-body,
-button,
-input,
-textarea,
-select {
-  font-family: 'Comfortaa', sans-serif !important;
-}
-
-h1, h2, h3,
-.section-title {
-  font-family: 'Comfortaa', sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.8px;
-}
-
-.brand h1 {
-  font-family: 'Comfortaa', sans-serif !important;
-  font-weight: 600;
-  font-size: 21px;
-  letter-spacing: -0.5px;
-}
-
-.brand-mark {
-  font-family: 'Rubik Mono One', sans-serif !important;
-  font-weight: 400;
-}
-
-h1, h2, h3, .section-title {
-  font-family: 'Comfortaa', sans-serif !important;
-  font-weight: 600;
-}
-
-p, label, .muted, .story {
-  font-family: 'Comfortaa', sans-serif;
-  line-height: 1.8;
-}
-@media (max-width: 600px) {
-  .brand h1 {
-    font-family: 'Comfortaa', sans-serif !important;
-    font-size: 17px !important;
-    font-weight: 500 !important;
-    letter-spacing: -0.6px !important;
-    line-height: 1.35 !important;
-  }
-
-  h1, h2, h3, .section-title {
-    font-weight: 600 !important;
-    letter-spacing: -0.5px;
-  }
-
-  .brand p {
-    font-size: 13px;
-  }
-}
+:root{--g:#2f4a37;--g2:#4a6b52;--g3:#e4ece0;--cream:#f4f2ea;--ink:#1f2d24;--muted:#6f7d73;--line:#e1e5da;--red:#a54b4b;--sh:0 10px 30px rgba(31,45,36,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-size:15px;line-height:1.6}
+body,button,input,textarea,select,h1,h2,h3,p,label{font-family:'Comfortaa',sans-serif!important}
+button{cursor:pointer}h1,h2,h3{font-weight:600;letter-spacing:-.5px;margin:0 0 8px}h2{font-size:24px}h3{font-size:17px}
+.top{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 18px}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}.mark{width:42px;height:42px;border-radius:13px;background:var(--g);color:#fff;display:grid;place-items:center;font-size:19px;font-weight:700;flex:none}
+.brand b{font-size:16px;display:block;line-height:1.2}.brand small{color:var(--muted);font-size:12px}
+.ua{display:flex;align-items:center;gap:9px}.dot{width:34px;height:34px;border-radius:50%;background:var(--g3);display:grid;place-items:center;font-weight:700}
+main{max-width:1080px;margin:20px auto;padding:0 16px 50px}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--sh);margin-bottom:16px}
+.muted{color:var(--muted)}.small{font-size:13px}.eyebrow{text-transform:uppercase;letter-spacing:1.5px;font-size:10px;font-weight:700;opacity:.75}
+.btn{border:0;border-radius:12px;padding:11px 16px;background:var(--g3);color:var(--ink);font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.pri{background:var(--g);color:#fff}.btn.ghost{background:transparent;border:1px solid var(--line)}.btn.danger{background:#f8eaea;color:var(--red)}.btn.sm{padding:8px 12px;font-size:13px}.btn:disabled{opacity:.5}
+input,textarea,select{width:100%;border:1px solid #d9dfd3;border-radius:12px;padding:12px 13px;background:#fff;color:var(--ink);font-size:15px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--g2);box-shadow:0 0 0 3px #dfeadb}textarea{min-height:120px;resize:vertical}
+label{display:block;font-size:13px;font-weight:700;margin:4px 0 6px;color:#4c5e52}.f{margin-bottom:12px}.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}.hidden{display:none!important}.msg{font-size:13px;color:var(--muted);min-height:20px}
+.tabs{display:flex;gap:7px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tab{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 16px;font-weight:700;color:#55665b}.tab.on{background:var(--g);border-color:var(--g);color:#fff}
+.hero{position:relative;overflow:hidden;color:#fff;border-radius:24px;padding:26px 20px 130px;margin-bottom:16px;background:linear-gradient(rgba(30,50,36,.5),rgba(30,50,36,.7)),url(hero.jpg),linear-gradient(160deg,#2b4533,#4a6b52);background-size:cover;background-position:center}
+.hero h2{font-size:28px;margin:6px 0}.hero p{margin:0 0 14px;opacity:.9;max-width:520px}.scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:115px;pointer-events:none}
+.hero .search{background:#fff;border:0;max-width:520px;position:relative;z-index:2}#hres{position:relative;z-index:3;max-width:520px}
+.hit{display:block;width:100%;text-align:left;background:#fff;color:var(--ink);border:0;border-bottom:1px solid var(--line);padding:11px 14px;font-weight:700}.hit small{display:block;color:var(--muted);font-weight:400}
+#hres{background:#fff;border-radius:12px;margin-top:6px;overflow:hidden}#hres:empty{display:none}
+.big{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;background:var(--g);color:#fff;border:0;border-radius:20px;padding:20px;min-height:120px;box-shadow:var(--sh)}
+.big span{font-size:30px}.big b{font-size:18px}.big small{opacity:.8}.bigs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.bigs .big:nth-child(2){background:var(--g2)}.bigs .big:nth-child(3){background:#6b8a6a}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tile{border-radius:18px;height:90px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff;font-weight:700;font-size:13px}.tile span{font-size:26px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:11px;margin-top:12px}
+.lc{border:1px solid var(--line);border-radius:15px;padding:13px;background:#fff;display:flex;flex-direction:column;gap:2px}.lc h3{margin:6px 0 2px}.lc p{margin:0 0 6px}
+.pill{display:inline-block;background:var(--g3);color:var(--g);padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;width:max-content;margin-right:4px}.pill.off{background:#f1e9d4;color:#7a6530}
+.seg{display:flex;gap:6px;margin:12px 0;background:var(--g3);padding:5px;border-radius:14px}.seg button{flex:1;border:0;background:transparent;border-radius:10px;padding:10px 6px;font-weight:700;color:var(--g)}.seg button.on{background:var(--g);color:#fff}
+.story{white-space:pre-wrap;line-height:1.9;font-size:17px}.wr,.gap{padding:12px 14px;background:#f6f8f3;border:1px solid #e8ece1;border-radius:12px;margin:8px 0}.gap.ok{background:#e8f3e6;border-color:#b6d7b0}.gap.bad{background:#fbeeee;border-color:#e3bcbc}.fb{font-size:13px;font-weight:700;margin-top:6px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:12px 0}.st{background:var(--g3);border-radius:16px;padding:14px}.st small{color:var(--muted);display:block}
+.num{font-size:26px;font-weight:800;color:var(--ink);line-height:1.2}
+details.fold{border:1px solid var(--line);border-radius:14px;margin:9px 0;background:#fff;overflow:hidden}details.fold>summary{list-style:none;cursor:pointer;padding:13px 14px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:700}
+.fr{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 12px;margin:0 8px 6px;background:#f6f8f3;border-radius:11px}.fr a{color:var(--g);font-weight:700;text-decoration:underline;cursor:pointer}
+.ic{border:0;background:#f8eaea;color:var(--red);border-radius:9px;padding:6px 9px;font-size:13px}.empty{padding:22px;text-align:center;color:var(--muted);background:#fafbf8;border:1px dashed #d9dfd3;border-radius:14px}
+.sc{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:8px 0;display:flex;justify-content:space-between;gap:8px;align-items:center;background:#fff;cursor:pointer}
+.auth{max-width:440px;margin:40px auto}.auth .mark{margin:0 auto 12px;width:56px;height:56px;font-size:25px}.ac{text-align:center;margin-bottom:18px}
+footer{text-align:center;color:#8a958d;font-size:12px;padding:20px}
+@media(max-width:600px){.g2{grid-template-columns:1fr}.hero h2{font-size:24px}.top{padding:10px 12px}.brand b{font-size:14px}}
 </style>
 </head>
 <body>
-<header class="topbar">
- <div class="topbar-inner">
-  <div class="brand"><div class="brand-mark">K</div><div><h1>KAMILA ENGLISH SCHOOL</h1><p>Learn with confidence ✨</p></div></div>
-  <div id="userArea" class="mobile-user hidden"><div id="userDot" class="user-dot">K</div><button class="btn ghost smallbtn" onclick="signOut()">Sign out</button></div>
- </div>
-</header>
+<header class="top"><div class="brand"><div class="mark">K</div><div><b>KAMILA ENGLISH SCHOOL</b><small>Learn with confidence ✨</small></div></div><div id="ua" class="ua hidden"><div id="dot" class="dot">K</div><button class="btn ghost sm" onclick="signOut()">Sign out</button></div></header>
 <main>
-<section id="auth" class="auth-wrap">
- <div class="auth-brand"><div class="brand-mark">K</div><h1>Welcome!</h1><p>Your English learning space</p></div>
- <div class="card auth-card">
-  <div class="field"><label for="fullName">Full name (for new account)</label><input id="fullName" autocomplete="name" placeholder="Your full name"></div>
-  <div class="field"><label for="email">Email address</label><input id="email" type="email" autocomplete="username" placeholder="name@example.com"></div>
-  <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="At least 6 characters"></div>
-  <div class="actions"><button class="btn primary" onclick="signIn()">Sign in</button><button class="btn" onclick="signUp()">Create account</button></div>
-  <p id="authMessage" class="message"></p>
- </div>
-</section>
-<section id="app" class="hidden">
- <div class="hero"><div><div class="eyebrow">Your learning journey</div><h2 id="helloTitle">Welcome back!</h2><p id="helloText">Explore your lessons, practise vocabulary and build confidence in English.</p></div><div class="hero-icon">📚</div></div>
- <nav class="tabs" id="tabs">
-  <button class="tab active" data-tab="texts" onclick="showTab('texts',this)">📖 Lessons</button>
-  <button class="tab" data-tab="translate" onclick="showTab('translate',this)">🔤 Vocabulary</button>
-  <button class="tab" data-tab="gaps" onclick="showTab('gaps',this)">✍️ Practice</button>
-  <button class="tab hidden" id="teacherTab" data-tab="teacher" onclick="showTab('teacher',this)">＋ Teacher</button>
-  <button class="tab hidden" id="resultsTab" data-tab="results" onclick="showTab('results',this);loadResults()">📊 Results</button>
- </nav>
- <section id="texts" class="card tab-panel">
-  <div class="eyebrow">Library</div><h2>Reading lessons</h2><p class="muted">Choose a lesson and learn at your own pace.</p>
-  <div class="toolbar">
-  <input id="resultSearch"
-    placeholder="Search student or lesson..."
-    oninput="renderResults()">
-
-  <select id="resultExercise" onchange="renderResults()">
-    <option value="">All exercises</option>
-    <option value="fill_gaps">Fill gaps</option>
-    <option value="translation">Translation</option>
-  </select>
-
-  <select id="resultStudent" onchange="renderResults()">
-    <option value="">All students</option>
-  </select>
-
-  <select id="resultSort" onchange="renderResults()">
-    <option value="new">Newest first</option>
-    <option value="old">Oldest first</option>
-    <option value="score">Highest score</option>
-  </select>
-</div>
-  <div id="lessonList" class="lesson-grid"><div class="empty">Loading lessons...</div></div>
-  <div id="reader" class="lesson-reader hidden"></div>
- </section>
- <section id="translate" class="card tab-panel hidden"><div class="eyebrow">Study words</div><h2>Vocabulary</h2><p class="muted">Words and translations from the selected lesson.</p><div id="wordList" class="empty">Choose a lesson first.</div></section>
- <section id="gaps" class="card tab-panel hidden"><div class="eyebrow">Test your knowledge</div><h2>Fill in the gaps</h2><p class="muted">Complete the sentences and check your answers.</p><div id="gapList" class="empty">Choose a lesson first.</div></section>
- <section id="teacher" class="card tab-panel hidden">
-  <div class="eyebrow">Teacher workspace</div><h2 id="formHeading">Create a lesson</h2><p class="muted">Add a reading text, vocabulary and practice tasks.</p>
-  <div class="card" style="margin:20px 0;background:#f6f8f6;">
-  <div class="eyebrow">FREE STORY GENERATOR</div>
-  <h3>Create a new story</h3>
-  <p class="muted">Generate an English story using your vocabulary.</p>
-
-  <div class="grid">
-    <div class="field span-6">
-      <label>English level</label>
-      <select id="genLevel">
-        <option>A1</option>
-        <option>A2</option>
-        <option>B1</option>
-        <option>B2</option>
-        <option>C1</option>
-      </select>
-    </div>
-
-    <div class="field span-6">
-      <label>Story topic</label>
-      <select id="genTopic">
-        <option>Friendship</option>
-        <option>Family</option>
-        <option>Animals</option>
-        <option>Travel</option>
-        <option>Love and relationships</option>
-        <option>School and education</option>
-        <option>Work and career</option>
-        <option>Food and cooking</option>
-        <option>Health and lifestyle</option>
-        <option>Nature</option>
-        <option>Technology</option>
-        <option>Daily life</option>
-        <option>Personal development</option>
-      </select>
-    </div>
-
-    
-     
-<div class="field span-12">
-  <label>Story genre</label>
-  <select id="genGenre">
-    <option value="mystery">Mystery & Detective</option>
-    <option value="adventure">Adventure</option>
-    <option value="fantasy">Fantasy & Magic</option>
-    <option value="romance">Romance & Relationships</option>
-    <option value="drama">Emotional Drama</option>
-    <option value="survival">Survival & Thriller</option>
-    <option value="comedy">Comedy</option>
-    <option value="scifi">Science Fiction</option>
-    <option value="inspiring">Inspirational</option>
-    <option value="horror">Spooky Stories</option>
-  </select>
-</div>
-
-
-    <div class="field span-12">
-  <label>Vocabulary list name</label>
-  <input id="genListName" placeholder="Example: Words from the text Cat">
-</div>
-
-    <div class="field span-12">
-      <label>New words — English = Russian, one per line</label>
-      <textarea id="genWords" placeholder="curious = любопытный&#10;forest = лес&#10;discover = обнаружить"></textarea>
-    </div>
-  </div>
-
-  <button class="btn primary" onclick="generateStory()">
-    ✨ Generate story
-  </button>
-
-  <div id="generatorMessage" class="message"></div>
-  <div id="generatorPreview" class="hidden"></div>
-</div>
-  <input id="editingLessonId" type="hidden">
-  <div class="grid">
-   <div class="field span-6"><label>Lesson title *</label><input id="lessonTitle" placeholder="Example: My Cat"></div>
-   <div class="field span-6"><label>Level</label><select id="lessonLevel"><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option></select></div>
-   <div class="field span-6"><label>Topic</label><input id="lessonTopic" placeholder="Animals, Travel, Family..."></div>
-   <div class="field span-6"><label>Group</label><input id="lessonGroup" placeholder="Group name (optional)"></div>
-   <div class="field span-12"><label>Reading text *</label><textarea id="lessonStory" placeholder="Write your story here..."></textarea></div>
-   <div class="field span-6"><label>Vocabulary — one per line: English = Russian</label><textarea id="lessonWords" placeholder="cat = кошка&#10;beautiful = красивый"></textarea></div>
-   <div class="field span-6"><label>Fill gaps — sentence | answer</label><textarea id="lessonGaps" placeholder="I have a ___ | cat&#10;The sky is ___ | blue"></textarea></div>
-   <div class="span-12"><label class="checkline"><input id="published" type="checkbox" checked> Publish lesson for students</label></div>
-  </div>
-  <div class="actions"><button class="btn primary" id="saveLessonBtn" onclick="saveLesson()">Save lesson</button><button class="btn ghost hidden" id="cancelEditBtn" onclick="resetLessonForm()">Cancel editing</button></div>
-  <p id="teacherMessage" class="message"></p>
-  <div class="notice small">Tip: use <b>___</b> in a sentence to mark the missing word. Put the correct answer after the vertical bar.</div>
-  <hr style="border:0;border-top:1px solid var(--line);margin:25px 0">
-  <h3>Manage lessons</h3><div id="manageLessons" class="lesson-grid"></div>
- </section>
- <section id="results" class="card tab-panel hidden">
-  <div class="eyebrow">Learning analytics</div><h2>Student results</h2><p class="muted">Review practice attempts and student progress.</p>
-  <div class="stats"><div class="stat"><span class="muted small">Attempts</span><strong id="statAttempts">—</strong></div><div class="stat"><span class="muted small">Average score</span><strong id="statAverage">—</strong></div><div class="stat"><span class="muted small">Students</span><strong id="statStudents">—</strong></div></div>
-  <div class="toolbar">
-  <input id="resultSearch" placeholder="Search student or lesson..." oninput="renderResults()">
-
-  <select id="resultExercise" onchange="renderResults()">
-    <option value="">All exercises</option>
-    <option value="fill_gaps">Fill gaps</option>
-    <option value="translation">Translation</option>
-  </select>
-
-  <select id="resultStudent" onchange="renderResults()">
-    <option value="">All students</option>
-  </select>
-
-  <select id="resultSort" onchange="renderResults()">
-    <option value="new">Newest first</option>
-    <option value="old">Oldest first</option>
-    <option value="score">Highest score</option>
-  </select>
-</div>
-  <div id="resultsList">
-  <div class="empty">Loading results...</div>
-</div>
-
-<section id="studentProfile" class="hidden" style="margin-top:20px;">
-  <button class="btn ghost smallbtn" onclick="closeStudentProfile()">
-    ← Back to results
-  </button>
-
-  <div class="card" style="margin-top:14px;">
-    <div class="eyebrow">Student profile</div>
-    <h2 id="profileStudentName">Student</h2>
-    <p id="profileStudentEmail" class="muted small"></p>
-
-    <div class="stats">
-      <div class="stat">
-        <span class="muted small">Attempts</span>
-        <strong id="profileAttempts">0</strong>
-      </div>
-      <div class="stat">
-        <span class="muted small">Average score</span>
-        <strong id="profileAverage">—</strong>
-      </div>
-      <div class="stat">
-        <span class="muted small">Lessons</span>
-        <strong id="profileLessons">0</strong>
-      </div>
-    </div>
-
-    <h3>Learning history</h3>
-    <div id="profileHistory"></div>
-  </div>
-</section>
- </section>
-</section>
+<section id="auth" class="auth"><div class="ac"><div class="mark">K</div><h2>Welcome!</h2><p class="muted">Your English learning space</p></div>
+<div class="card"><div class="f"><label>Full name (for new account)</label><input id="fullName" autocomplete="name" placeholder="Your full name"></div>
+<div class="f"><label>Email address</label><input id="email" type="email" autocomplete="username" placeholder="name@example.com"></div>
+<div class="f"><label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="At least 6 characters"></div>
+<div class="row"><button class="btn pri" onclick="signIn()">Sign in</button><button class="btn" onclick="signUp()">Create account</button></div><p id="am" class="msg"></p></div></section>
+<section id="app" class="hidden"><nav id="tabs" class="tabs"></nav><div id="view"></div></section>
 </main>
 <footer>KAMILA ENGLISH SCHOOL · Learn with confidence</footer>
 <script>
-const SUPABASE_URL="https://aidjhwgcnvoucozskghl.supabase.co";
-const SUPABASE_KEY="sb_publishable_C7PKJ6TvTYqsW1IMnK9g1A_UGcDORju";
-const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-
-let currentUser=null,currentRole="student",currentLesson=null,allLessons=[],allResults=[];
-
+const db=supabase.createClient("https://aidjhwgcnvoucozskghl.supabase.co","sb_publishable_C7PKJ6TvTYqsW1IMnK9g1A_UGcDORju");
 const $=id=>document.getElementById(id);
-function message(id,text){$(id).textContent=text||""}
-function safe(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+const S={user:null,role:"student",name:"",lessons:[],results:[],people:[],view:"home",lid:null,ltab:"text",q:"",lv:"",month:"",sq:"",pid:null,editId:null};
+let DAYS={};
+const safe=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const msg=(id,t)=>{const e=$(id);if(e)e.textContent=t||""};
+const pct=(s,t)=>t?Math.round(s/t*100):0;
+const isT=()=>S.role==="teacher";
+const sum=(a,k)=>a.reduce((s,r)=>s+(Number(r[k])||0),0);
+const mk=d=>{d=new Date(d);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")};
+const dk=d=>{d=new Date(d);return mk(d)+"-"+String(d.getDate()).padStart(2,"0")};
+S.month=mk(new Date());
 
-function showTab(id,button){
- document.querySelectorAll(".tab-panel").forEach(s=>s.classList.add("hidden"));
- $(id).classList.remove("hidden");
- document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
- if(button)button.classList.add("active");
- window.scrollTo({top:0,behavior:"smooth"});
-}
-
-async function signIn(){
- const {data,error}=await db.auth.signInWithPassword({
-  email:$("email").value.trim(),password:$("password").value
- });
- if(error){message("authMessage",error.message);return}
- await loadApp(data.user);
-}
-
-async function signUp(){
- const fullName=$("fullName").value.trim();
- const email=$("email").value.trim();
- const password=$("password").value;
- if(!fullName||!email||!password){
-  message("authMessage","Please enter your name, email and password.");return;
- }
- if(password.length<6){
-  message("authMessage","Password must be at least 6 characters.");return;
- }
- const {data,error}=await db.auth.signUp({
-  email,password,options:{data:{full_name:fullName}}
- });
- if(error){message("authMessage",error.message);return}
- if(data.session)await loadApp(data.user);
- else message("authMessage","Account created. Check your email to confirm registration.");
-}
-
-async function signOut(){
- await db.auth.signOut();
- location.reload();
-}
+async function signIn(){const{data,error}=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)return msg("am",error.message);await loadApp(data.user)}
+async function signUp(){const n=$("fullName").value.trim(),e=$("email").value.trim(),p=$("password").value;
+ if(!n||!e||!p)return msg("am","Please enter your name, email and password.");if(p.length<6)return msg("am","Password must be at least 6 characters.");
+ const{data,error}=await db.auth.signUp({email:e,password:p,options:{data:{full_name:n}}});if(error)return msg("am",error.message);
+ if(data.session)await loadApp(data.user);else msg("am","Account created. Check your email to confirm registration.")}
+async function signOut(){await db.auth.signOut();location.reload()}
 
 async function loadApp(user){
- currentUser=user;
- const {data,error}=await db.from("profiles")
-  .select("role,full_name").eq("id",user.id).single();
- if(error||!data){
-  message("authMessage","Profile not found. Please contact your teacher.");return;
- }
- currentRole=data.role||"student";
- $("auth").classList.add("hidden");
- $("app").classList.remove("hidden");
- $("userArea").classList.remove("hidden");
- const displayName=data.full_name||user.user_metadata?.full_name||user.email;
- $("helloTitle").textContent="Welcome, "+displayName.split(" ")[0]+"!";
- $("helloText").textContent=currentRole==="teacher"
-  ?"Your teaching workspace is ready. Create lessons and follow student progress."
-  :"Choose a lesson, practise new words and track your English progress.";
- $("userDot").textContent=(displayName[0]||"K").toUpperCase();
- if(currentRole==="teacher"){
-  $("teacherTab").classList.remove("hidden");
-  $("resultsTab").classList.remove("hidden");
- }
- await loadLessons();
-}
+ S.user=user;const{data,error}=await db.from("profiles").select("role,full_name").eq("id",user.id).single();
+ if(error||!data)return msg("am","Profile not found. Please contact your teacher.");
+ S.role=data.role||"student";S.name=data.full_name||user.user_metadata?.full_name||user.email;
+ $("auth").classList.add("hidden");$("app").classList.remove("hidden");$("ua").classList.remove("hidden");$("dot").textContent=(S.name[0]||"K").toUpperCase();
+ await loadLessons();if(!isT())await loadMine();go("home")}
+async function loadLessons(){const{data}=await db.from("lessons").select("*").order("created_at",{ascending:false});S.lessons=data||[]}
+async function loadMine(){const{data}=await db.from("results").select("id,lesson_id,exercise,score,total,created_at").eq("student_id",S.user.id).order("created_at",{ascending:false});S.results=data||[]}
+async function loadAll(){const[r,p]=await Promise.all([db.from("results").select("id,student_id,lesson_id,exercise,score,total,created_at").order("created_at",{ascending:false}),db.from("profiles").select("id,full_name,email,role")]);
+ if(r.error||p.error){alert("Could not load results: "+(r.error||p.error).message);return}S.results=r.data||[];S.people=p.data||[]}
 
-async function loadLessons(){
- $("lessonList").innerHTML='<div class="empty">Loading lessons...</div>';
- const {data,error}=await db.from("lessons").select("*")
-  .order("created_at",{ascending:false});
- if(error){$("lessonList").textContent=error.message;return}
- allLessons=data||[];
- renderLessonList();
- renderManageLessons();
- updateGroupFilter();
-}
+const vis=()=>S.lessons.filter(l=>isT()||l.published);
+const person=id=>S.people.find(p=>p.id===id);
+const nameOf=id=>{const p=person(id);return p?(p.full_name||p.email||"Student"):"Unknown"};
+const ltitle=id=>{const l=S.lessons.find(x=>x.id===id);return l?l.title:"Deleted lesson"};
 
-function updateGroupFilter(){
- const select=$("groupFilter"),current=select.value;
- const groups=[...new Set(allLessons.map(l=>(l.group_name||"").trim()).filter(Boolean))].sort();
- select.innerHTML='<option value="">All groups</option>'+
-  groups.map(g=>'<option value="'+safe(g)+'">'+safe(g)+'</option>').join("");
- if(groups.includes(current))select.value=current;
-}
+function go(v,x){S.view=v;if(x!==undefined)S.pid=x;render()}
+async function goResults(){await loadAll();go("results")}
+function render(){
+ const T=isT()?[["home","🏠 Home"],["lessons","📚 Lessons"],["create","＋ Create"],["results","📊 Results"]]:[["home","🏠 Home"],["lessons","📚 Lessons"],["progress","📈 My progress"]];
+ const act={lesson:"lessons",student:"results"}[S.view]||S.view;
+ $("tabs").innerHTML=T.map(([k,n])=>`<button class="tab ${act===k?"on":""}" onclick="${k==="results"?"goResults()":`go('${k}')`}">${n}</button>`).join("");
+ $("view").innerHTML=({home:vHome,lessons:vLessons,lesson:vLesson,progress:vProgress,create:vCreate,results:vResults,student:vStudent})[S.view]();
+ window.scrollTo({top:0})}
 
-function renderLessonList(){
- const search=($("lessonSearch")?.value||"").toLowerCase();
- const level=$("levelFilter")?.value||"";
- const group=$("groupFilter")?.value||"";
- const lessons=allLessons.filter(l=>
-  (currentRole==="teacher"||l.published)&&
-  (!level||l.level===level)&&
-  (!group||(l.group_name||"")===group)&&
-  (!search||[l.title,l.topic,l.story,l.group_name].join(" ").toLowerCase().includes(search))
- );
- const area=$("lessonList");
- if(!lessons.length){
-  area.innerHTML='<div class="empty" style="grid-column:1/-1">No lessons found. Try another search or filter.</div>';
-  return;
- }
- area.innerHTML=lessons.map(l=>`
-  <article class="lesson-card">
-   <span class="pill">${safe(l.level||"General")}</span>
-   <h3>${safe(l.title||"Untitled lesson")}</h3>
-   <p class="muted small">${safe(l.topic||"English practice")}${l.group_name?" · "+safe(l.group_name):""}</p>
-   <div class="actions">
-    <button class="btn primary smallbtn" onclick="openLesson('${l.id}')">Open lesson →</button>
-    ${currentRole==="teacher"?`<button class="btn ghost smallbtn" onclick="editLesson('${l.id}')">Edit</button>`:""}
-   </div>
-  </article>`).join("");
-}
+const tree=(x,h)=>`<path d="M${x} 112 l-13 0 l13 -${h} l13 ${h}z" fill="#264233"/>`;
+const scene=()=>`<svg class="scene" viewBox="0 0 400 115" preserveAspectRatio="none"><circle cx="330" cy="30" r="16" fill="#f4efd9" opacity=".9"/><path d="M0 85 L60 40 L120 80 L190 25 L270 80 L330 50 L400 85 V115 H0Z" fill="#6f946f" opacity=".85"/><path d="M0 100 L70 70 L150 98 L230 62 L320 100 L400 80 V115 H0Z" fill="#3f6a4d"/>${tree(30,38)}${tree(70,28)}${tree(300,40)}${tree(345,30)}${tree(385,36)}<rect y="105" width="400" height="10" fill="#2f4a37"/></svg>`;
+const first=()=>(S.name||"").split(" ")[0]||"friend";
 
-function openLesson(id){
- const lesson=allLessons.find(l=>String(l.id)===String(id));
- if(!lesson)return;
- currentLesson=lesson;
- const reader=$("reader");
- reader.classList.remove("hidden");
- reader.innerHTML=`
-  <div class="eyebrow">Selected lesson</div>
-  <h2>${safe(lesson.title)}</h2>
-  <p class="muted small">${safe(lesson.level||"")} · ${safe(lesson.topic||"")}</p>
-  <div class="story">${safe(lesson.story||"No reading text.")}</div>
-  <div class="reader-actions">
-   <button class="btn softblue" onclick="showTab('translate',document.querySelector('[data-tab=translate]'))">🔤 Vocabulary</button>
-   <button class="btn softblue" onclick="showTab('gaps',document.querySelector('[data-tab=gaps]'))">✍️ Fill gaps</button>
-  </div>`;
- const words=Array.isArray(lesson.words)?lesson.words:[];
- $("wordList").innerHTML=words.length
-  ?words.map(w=>`<div class="word-row"><b>${safe(w.word)}</b><span> — ${safe(w.translation)}</span></div>`).join("")
-  :'<div class="empty">No vocabulary in this lesson yet.</div>';
- renderGaps(Array.isArray(lesson.gap_sentences)?lesson.gap_sentences:[]);
- reader.scrollIntoView({behavior:"smooth",block:"start"});
-}
+function vHome(){
+ const b=(f,i,t,s)=>`<button class="big" onclick="${f}"><span>${i}</span><b>${t}</b><small>${s}</small></button>`;
+ return `<div class="hero"><span class="eyebrow">${isT()?"Teacher workspace":"Your learning journey"}</span><h2>Welcome, ${safe(first())}!</h2><p>${isT()?"Create lessons and follow your students' progress.":"Read, learn new words and practise every day."}</p>
+ <input id="hs" class="search" placeholder="🔍 Search lesson by title..." oninput="homeSearch()"><div id="hres"></div>${scene()}</div>
+ <div class="bigs">${isT()?b("go('lessons')","📚","Lessons","All reading lessons")+b("go('create')","✨","Create lesson","AI generator and editor")+b("goResults()","📊","Student results","Month, days and students"):b("go('progress')","📈","My progress","Scores, mistakes, completed texts")+b("go('lessons')","📚","Lessons","Text, vocabulary and practice")}</div>
+ <div class="tiles"><div class="tile" style="background:linear-gradient(135deg,#4a6b52,#2f4a37)"><span>📖</span>Read</div><div class="tile" style="background:linear-gradient(135deg,#6b8a6a,#3f6a4d)"><span>🔤</span>Words</div><div class="tile" style="background:linear-gradient(135deg,#2f4a37,#1f3326)"><span>✍️</span>Practice</div></div>`}
+function homeSearch(){const q=$("hs").value.trim().toLowerCase();
+ $("hres").innerHTML=q?(vis().filter(l=>(l.title||"").toLowerCase().includes(q)).slice(0,6).map(l=>`<button class="hit" onclick="openLesson('${l.id}')">${safe(l.title)}<small>${safe(l.level||"")} · ${safe(l.topic||"")}</small></button>`).join("")||'<div class="hit">No lessons found</div>'):""}
 
-function renderGaps(gaps){
- const area=$("gapList");
- if(!gaps.length){
-  area.innerHTML='<div class="empty">No exercises in this lesson yet.</div>';return;
- }
- area.innerHTML=gaps.map((g,i)=>`
-  <div class="gap-row">
-   <label>${i+1}. ${safe(g.sentence)}</label>
-   <input id="gap${i}" autocomplete="off" placeholder="Your answer">
-  </div>`).join("")+
-  '<div class="actions"><button class="btn primary" onclick="checkGaps()">Check answers</button></div><p id="gapMessage" class="message"></p>';
-}
+const card=(l,mg)=>`<article class="lc"><div><span class="pill">${safe(l.level||"")}</span>${isT()&&!l.published?'<span class="pill off">Draft</span>':""}</div><h3>${safe(l.title)}</h3><p class="muted small">${safe(l.topic||"")}${l.group_name?" · "+safe(l.group_name):""}</p>
+<div class="row" style="margin-top:auto">${mg?"":`<button class="btn pri sm" onclick="openLesson('${l.id}')">Open →</button>`}${isT()?`<button class="btn ghost sm" onclick="editLesson('${l.id}')">Edit</button>`:""}${mg?`<button class="btn danger sm" onclick="delLesson('${l.id}')">Delete</button>`:""}</div></article>`;
+function listHtml(){const q=S.q.toLowerCase();const L=vis().filter(l=>(!S.lv||l.level===S.lv)&&(!q||(l.title||"").toLowerCase().includes(q)));return L.length?L.map(l=>card(l)).join(""):'<div class="empty" style="grid-column:1/-1">No lessons found.</div>'}
+function vLessons(){return `<div class="card"><h2>Reading lessons</h2><p class="muted">Choose a lesson. Text, vocabulary and practice open with buttons.</p>
+<div class="g2"><input value="${safe(S.q)}" placeholder="🔍 Search by lesson title..." oninput="S.q=this.value;$('list').innerHTML=listHtml()"><select onchange="S.lv=this.value;$('list').innerHTML=listHtml()"><option value="">All levels</option>${["A1","A2","B1","B2","C1"].map(x=>`<option ${S.lv===x?"selected":""}>${x}</option>`).join("")}</select></div>
+<div id="list" class="grid">${listHtml()}</div></div>`}
+function openLesson(id){S.lid=id;S.ltab="text";go("lesson")}
+function setTab(t){S.ltab=t;render()}
+
+function vLesson(){
+ const l=S.lessons.find(x=>String(x.id)===String(S.lid));if(!l)return vLessons();
+ const W=Array.isArray(l.words)?l.words:[],G=Array.isArray(l.gap_sentences)?l.gap_sentences:[],t=S.ltab;
+ let body;
+ if(t==="text")body=`<div class="story">${safe(l.story||"No text.")}</div>`;
+ else if(t==="vocab")body=W.length?W.map(w=>`<div class="wr"><b>${safe(w.word)}</b> — ${safe(w.translation)}</div>`).join(""):'<div class="empty">No vocabulary yet.</div>';
+ else body=G.length?G.map((g,i)=>`<div class="gap" id="gr${i}"><label>${i+1}. ${safe(g.sentence)}</label><input id="g${i}" autocomplete="off" autocapitalize="none" placeholder="Your answer"><div id="gf${i}" class="fb"></div></div>`).join("")+`<div class="row"><button id="chk" class="btn pri" onclick="checkGaps()">Check answers</button><button id="rt" class="btn ghost hidden" onclick="render()">Try again</button></div><p id="gm" class="msg" style="font-weight:700;color:var(--ink)"></p>`:'<div class="empty">No exercises yet.</div>';
+ const sg=(k,n)=>`<button class="${t===k?"on":""}" onclick="setTab('${k}')">${n}</button>`;
+ return `<button class="btn ghost sm" onclick="go('lessons')">← All lessons</button><div class="card" style="margin-top:10px"><span class="pill">${safe(l.level||"")}</span><h2 style="margin-top:8px">${safe(l.title)}</h2><p class="muted small">${safe(l.topic||"")}</p>
+ <div class="seg">${sg("text","📖 Text")}${sg("vocab","🔤 Vocabulary")}${sg("practice","✍️ Practice ("+G.length+")")}</div>${body}</div>`}
 
 async function checkGaps(){
- if(!currentLesson)return;
- const gaps=Array.isArray(currentLesson.gap_sentences)?currentLesson.gap_sentences:[];
- let score=0;
- gaps.forEach((g,i)=>{
-  const answer=$("gap"+i).value.trim().toLowerCase();
-  if(answer===String(g.answer||"").trim().toLowerCase())score++;
- });
- const {error}=await db.from("results").insert({
-  student_id:currentUser.id,lesson_id:currentLesson.id,
-  exercise:"fill_gaps",score,total:gaps.length
- });
- const msg=`Your score: ${score} / ${gaps.length}`;
- message("gapMessage",error?msg+" · Could not save result: "+error.message:msg+" · Result saved!");
-}
-  function parseWords(){
- return $("lessonWords").value.split("\n").map(x=>x.trim()).filter(Boolean)
- .map(line=>{
-  const p=line.split("=");
-  return {word:(p[0]||"").trim(),translation:(p.slice(1).join("=")||"").trim()};
- }).filter(x=>x.word&&x.translation);
-}
+ const l=S.lessons.find(x=>String(x.id)===String(S.lid));const G=l.gap_sentences||[];let ok=0;
+ G.forEach((g,i)=>{const a=$("g"+i).value.trim().toLowerCase(),c=String(g.answer||"").trim().toLowerCase(),good=a===c;if(good)ok++;
+  $("gr"+i).classList.add(good?"ok":"bad");$("g"+i).disabled=true;$("gf"+i).innerHTML=good?"✓ Correct":"✗ Correct answer: "+safe(g.answer)});
+ $("chk").classList.add("hidden");$("rt").classList.remove("hidden");
+ const m=`Score: ${ok} / ${G.length} · ${pct(ok,G.length)}% · Mistakes: ${G.length-ok}`;msg("gm",m);
+ if(!isT()){const{error}=await db.from("results").insert({student_id:S.user.id,lesson_id:l.id,exercise:"fill_gaps",score:ok,total:G.length});
+  msg("gm",error?m+" · Could not save: "+error.message:m+" · Result saved ✓");if(!error)await loadMine()}}
 
-function parseGaps(){
- return $("lessonGaps").value.split("\n").map(x=>x.trim()).filter(Boolean)
- .map(line=>{
-  const p=line.split("|");
-  return {sentence:(p[0]||"").trim(),answer:(p.slice(1).join("|")||"").trim()};
- }).filter(x=>x.sentence&&x.answer);
-}
+function lessonSummary(R){
+ const by={};R.forEach(r=>{(by[r.lesson_id]=by[r.lesson_id]||[]).push(r)});
+ const k=Object.keys(by);if(!k.length)return '<div class="empty">No completed texts yet.</div>';
+ return k.map(id=>{const a=by[id],last=a[0],best=Math.max(...a.map(r=>pct(r.score,r.total)));
+  return `<div class="sc" style="cursor:default"><div><b>${safe(ltitle(id))}</b><div class="muted small">Attempts: ${a.length} · Best: ${best}% · Last: ${last.score}/${last.total} · Mistakes (last): ${last.total-last.score}</div></div><div class="num">${pct(last.score,last.total)}%</div></div>`}).join("")}
+function statCards(R){const s=sum(R,"score"),t=sum(R,"total");return `<div class="stats"><div class="st"><small>Overall score</small><div class="num">${pct(s,t)}%</div></div><div class="st"><small>Texts completed</small><div class="num">${new Set(R.map(r=>r.lesson_id)).size}</div></div><div class="st"><small>Mistakes</small><div class="num">${t-s}</div></div><div class="st"><small>Attempts</small><div class="num">${R.length}</div></div></div>`}
+const history=(R,del)=>R.map(r=>{const d=new Date(r.created_at);return `<div class="fr" style="margin:6px 0"><div><b>${safe(ltitle(r.lesson_id))}</b><div class="muted small">${d.toLocaleDateString("en-GB")} ${d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</div></div><div class="row" style="margin:0"><span class="num" style="font-size:18px">${r.score}/${r.total}</span>${del?`<button class="ic" onclick="delResults(['${r.id}'])">🗑</button>`:""}</div></div>`}).join("")||'<div class="empty">No attempts yet.</div>';
+function vProgress(){return `<div class="card"><h2>My progress</h2><p class="muted">Your results, completed texts and mistakes.</p>${statCards(S.results)}<h3>Completed texts</h3>${lessonSummary(S.results)}<h3 style="margin-top:16px">Recent attempts</h3>${history(S.results.slice(0,15))}</div>`}
 
-async function saveLesson(){
- const id=$("editingLessonId").value;
- const lesson={
-  title:$("lessonTitle").value.trim(),
-  name:$("lessonTitle").value.trim(),
-  level:$("lessonLevel").value,
-  topic:$("lessonTopic").value.trim(),
-  group_name:$("lessonGroup").value.trim()||null,
-  story:$("lessonStory").value.trim(),
-  words:parseWords(),
-  gap_sentences:parseGaps(),
-  published:$("published").checked
- };
- if(!lesson.title||!lesson.story){
-  message("teacherMessage","Please enter a lesson title and reading text.");return;
- }
- $("saveLessonBtn").disabled=true;
- message("teacherMessage","Saving...");
- let response;
- if(id)response=await db.from("lessons").update(lesson).eq("id",id);
- else response=await db.from("lessons").insert({...lesson,created_by:currentUser.id});
- $("saveLessonBtn").disabled=false;
- if(response.error){
-  message("teacherMessage",response.error.message);return;
- }
- message("teacherMessage",id?"Lesson updated successfully!":"Lesson created successfully!");
- resetLessonForm(false);
- await loadLessons();
-}
- let generatedStoryData=null;
+function vCreate(){return `<div class="card"><span class="eyebrow">AI generator</span><h2>Create a new story</h2><p class="muted">Write the level, topic, title and words. The AI writes the text and 10+ exercises.</p>
+<div class="g2"><div class="f"><label>English level</label><select id="gLevel">${["A1","A2","B1","B2","C1"].map(x=>`<option>${x}</option>`).join("")}</select></div><div class="f"><label>Text title</label><input id="gTitle" placeholder="Example: The Lost Key"></div></div>
+<div class="f"><label>What is the text about?</label><input id="gTopic" placeholder="Example: two friends find a mystery in the school garden"></div>
+<div class="f"><label>New words — English = Russian, one per line</label><textarea id="gWords" placeholder="curious = любопытный&#10;forest = лес&#10;discover = обнаружить"></textarea></div>
+<button class="btn pri" id="gBtn" onclick="generateStory()">✨ Generate story</button><p id="gm" class="msg"></p></div>
+<div class="card"><h2 id="fh">Create a lesson</h2><input id="lId" type="hidden">
+<div class="g2"><div class="f"><label>Lesson title *</label><input id="lTitle"></div><div class="f"><label>Level</label><select id="lLevel">${["A1","A2","B1","B2","C1"].map(x=>`<option>${x}</option>`).join("")}</select></div>
+<div class="f"><label>Topic</label><input id="lTopic" placeholder="Animals, Travel..."></div><div class="f"><label>Group</label><input id="lGroup" placeholder="Group name (optional)"></div></div>
+<div class="f"><label>Reading text *</label><textarea id="lStory" style="min-height:200px"></textarea></div>
+<div class="g2"><div class="f"><label>Vocabulary — English = Russian</label><textarea id="lWords"></textarea></div><div class="f"><label>Fill gaps — sentence | answer (min 10)</label><textarea id="lGaps"></textarea></div></div>
+<label style="display:flex;gap:8px;align-items:center"><input id="lPub" type="checkbox" checked style="width:auto"> Publish lesson for students</label>
+<div class="row"><button id="sBtn" class="btn pri" onclick="saveLesson()">Save lesson</button><button id="cBtn" class="btn ghost hidden" onclick="resetForm()">Cancel editing</button></div><p id="tm" class="msg"></p>
+<div class="empty small" style="margin-top:8px">Use <b>___</b> for the missing word, then | and the answer.</div></div>
+<div class="card"><h2>Manage lessons</h2><div class="grid">${S.lessons.map(l=>card(l,true)).join("")||'<div class="empty">No lessons yet.</div>'}</div></div>`}
 
-
+const pw=t=>t.split("\n").map(x=>x.trim()).filter(Boolean).map(x=>{const p=x.split("=");return{word:p[0].trim(),translation:p.slice(1).join("=").trim()}}).filter(x=>x.word&&x.translation);
+const pg=t=>t.split("\n").map(x=>x.trim()).filter(Boolean).map(x=>{const p=x.split("|");return{sentence:p[0].trim(),answer:p.slice(1).join("|").trim()}}).filter(x=>x.sentence&&x.answer);
 
 async function generateStory(){
- const level=$("genLevel").value;
- const topic=$("genTopic").value;
- const genre=$("genGenre").value;
- const listName=$("genListName").value.trim();
- const rawWords=$("genWords").value;
-
- const words=rawWords.split("\n").map(line=>{
-  const p=line.split("=");
-  return {
-   word:(p[0]||"").trim(),
-   translation:(p.slice(1).join("=")||"").trim()
-  };
- }).filter(w=>w.word&&w.translation);
-
- if(words.length<3){
-  message("generatorMessage","Please enter at least 3 vocabulary words with translations.");
-  return;
- }
- if(words.length>30){
-  message("generatorMessage","Please use no more than 30 words.");
-  return;
- }
-
- const button=document.querySelector('[onclick="generateStory()"]');
- if(button)button.disabled=true;
- message("generatorMessage","AI is writing your story. Please wait...");
-
- try{
-  const {data,error}=await db.functions.invoke("generate-story",{
-   body:{
-    level,topic,genre,listName,wordsText:rawWords
-   }
-  });
-
-  if(error){
-   let detail=error.message||"Function request failed.";
-   if(error.context){
-    try{
-     const body=await error.context.json();
-     if(body.error)detail=body.error;
-    }catch(e){}
-   }
-   throw new Error(detail);
-  }
-
-  if(!data||!data.story||!Array.isArray(data.vocabulary)||!Array.isArray(data.gaps)){
-   throw new Error(data?.error||"Incomplete AI response.");
-  }
-
-  const title=data.title||listName||"New story";
-
-  $("lessonTitle").value=title;
-  $("lessonLevel").value=level;
-  $("lessonTopic").value=topic;
-  $("lessonStory").value=data.story;
-  $("lessonWords").value=data.vocabulary.map(v=>
-   v.word+" = "+v.translation
-  ).join("\n");
-  $("lessonGaps").value=data.gaps.map(g=>
-   g.sentence+" | "+g.answer
-  ).join("\n");
-
-  $("generatorPreview").classList.remove("hidden");
-  $("generatorPreview").innerHTML=
-   '<div class="notice" style="margin-top:14px;">'+
-   '<b>Your AI story is ready!</b><br>'+
-   'Title: '+safe(title)+
-   '<br>Level: '+safe(level)+
-   '<br>Topic: '+safe(topic)+
-   '<br>Genre: '+safe(genre)+
-   '<br>Words: '+data.story.trim().split(/\s+/).length+
-   '<br>Vocabulary: '+data.vocabulary.length+
-   '<br>Exercises: '+data.gaps.length+
-   '<br><br>Review the lesson and click Save lesson when ready.'+
-   '</div>';
-
-  message("generatorMessage","Your AI story is ready!");
-  $("lessonTitle").scrollIntoView({behavior:"smooth",block:"center"});
-
- }catch(error){
-  console.error("Story generation error:",error);
-  message("generatorMessage","Generation failed: "+error.message);
- }finally{
-  if(button)button.disabled=false;
- }
-}
-
-
-
-function resetLessonForm(clearMessage=true){
- $("editingLessonId").value="";
- $("formHeading").textContent="Create a lesson";
- $("saveLessonBtn").textContent="Save lesson";
- $("cancelEditBtn").classList.add("hidden");
- ["lessonTitle","lessonTopic","lessonGroup","lessonStory","lessonWords","lessonGaps"]
-  .forEach(id=>$(id).value="");
- $("lessonLevel").value="A1";
- $("published").checked=true;
- if(clearMessage)message("teacherMessage","");
-}
-
-function editLesson(id){
- const l=allLessons.find(x=>String(x.id)===String(id));
- if(!l)return;
- $("editingLessonId").value=l.id;
- $("formHeading").textContent="Edit lesson";
- $("saveLessonBtn").textContent="Save changes";
- $("cancelEditBtn").classList.remove("hidden");
- $("lessonTitle").value=l.title||"";
- $("lessonLevel").value=l.level||"A1";
- $("lessonTopic").value=l.topic||"";
- $("lessonGroup").value=l.group_name||"";
- $("lessonStory").value=l.story||"";
- $("lessonWords").value=(Array.isArray(l.words)?l.words:[])
-  .map(w=>w.word+" = "+w.translation).join("\n");
- $("lessonGaps").value=(Array.isArray(l.gap_sentences)?l.gap_sentences:[])
-  .map(g=>g.sentence+" | "+g.answer).join("\n");
- $("published").checked=!!l.published;
- message("teacherMessage","Editing: "+(l.title||"lesson"));
- showTab("teacher",document.querySelector('[data-tab=teacher]'));
- window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function renderManageLessons(){
- if(currentRole!=="teacher")return;
- $("manageLessons").innerHTML=allLessons.length
- ?allLessons.map(l=>`
-  <article class="lesson-card">
-   <span class="pill ${l.published?"sage":""}">${l.published?"Published":"Draft"}</span>
-   <h3>${safe(l.title)}</h3>
-   <p class="muted small">${safe(l.level)} · ${safe(l.group_name||"No group")}</p>
-   <div class="actions">
-    <button class="btn smallbtn" onclick="editLesson('${l.id}')">Edit</button>
-    <button class="btn danger smallbtn" onclick="deleteLesson('${l.id}')">Delete</button>
-   </div>
-  </article>`).join("")
- :'<div class="empty" style="grid-column:1/-1">No lessons created yet.</div>';
-}
-
-async function deleteLesson(id){
- const l=allLessons.find(x=>String(x.id)===String(id));
- if(!l)return;
- if(!confirm('Delete lesson "'+(l.title||"")+'"? This cannot be undone.'))return;
- const {error}=await db.from("lessons").delete().eq("id",id);
- if(error){alert("Could not delete lesson: "+error.message);return}
- if(currentLesson&&String(currentLesson.id)===String(id)){
-  currentLesson=null;
-  $("reader").classList.add("hidden");
- }
- await loadLessons();
-}
-
-async function loadResults(){
- $("resultsList").innerHTML='<div class="empty">Loading results...</div>';
- const {data,error}=await db.from("results")
-  .select("student_id,lesson_id,exercise,score,total,created_at")
-  .order("created_at",{ascending:false});
- if(error){$("resultsList").textContent=error.message;return}
- const rows=data||[];
- const studentIds=[...new Set(rows.map(r=>r.student_id).filter(Boolean))];
- const lessonIds=[...new Set(rows.map(r=>r.lesson_id).filter(Boolean))];
- let students=[],lessons=[];
- if(studentIds.length){
-  const r=await db.from("profiles").select("id,full_name,email").in("id",studentIds);
-  if(r.error){$("resultsList").textContent=r.error.message;return}
-  students=r.data||[];
- }
- if(lessonIds.length){
-  const r=await db.from("lessons").select("id,title").in("id",lessonIds);
-  if(r.error){$("resultsList").textContent=r.error.message;return}
-  lessons=r.data||[];
- }
- allResults=rows.map(r=>({
-  ...r,
-  student:students.find(s=>s.id===r.student_id),
-  lesson:lessons.find(l=>l.id===r.lesson_id)
- }));
-  const studentSelect=$("resultStudent");
- const selectedStudent=studentSelect.value;
-
- const uniqueStudents=[...new Map(
-  students.map(st=>[st.id,st])
- ).values()].sort((a,b)=>
-  (a.full_name||a.email||"").localeCompare(b.full_name||b.email||"")
- );
-
- studentSelect.innerHTML='<option value="">All students</option>'+
-  uniqueStudents.map(st=>
-   '<option value="'+safe(st.id)+'">'+
-   safe(st.full_name||st.email||"Student")+
-   '</option>'
-  ).join("");
-
- if(uniqueStudents.some(st=>st.id===selectedStudent)){
-  studentSelect.value=selectedStudent;
- }
- $("statAttempts").textContent=rows.length;
- const total=rows.reduce((s,r)=>s+(Number(r.total)||0),0);
- const score=rows.reduce((s,r)=>s+(Number(r.score)||0),0);
- $("statAverage").textContent=total?Math.round(score/total*100)+"%":"—";
- $("statStudents").textContent=studentIds.length;
- renderResults();
-}
-
-
-
-function renderResults(){
-  let rows=[...allResults];
-  const q=($("resultSearch")?.value||"").toLowerCase();
-  const ex=$("resultExercise")?.value||"";
-const studentId=$("resultStudent")?.value||"";
-const sort=$("resultSort")?.value||"new";
-
-  rows=rows.filter(r=>
-    (!ex||r.exercise===ex)&&
-(!studentId||String(r.student_id)===studentId)&&
-    (!q||[
-      r.student?.full_name,
-      r.student?.email,
-      r.lesson?.title,
-      r.exercise
-    ].join(" ").toLowerCase().includes(q))
-  );
-
-  if(sort==="old"){
-    rows.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
-  }else if(sort==="score"){
-    rows.sort((a,b)=>
-      (Number(b.score)/Math.max(1,Number(b.total)))-
-      (Number(a.score)/Math.max(1,Number(a.total)))
-    );
-  }else{
-    rows.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-  }
-
-  if(!rows.length){
-    $("resultsList").innerHTML=
-      '<div class="empty">No results found.</div>';
-    return;
-  }
-
-  const groups={};
-
-  rows.forEach(r=>{
-    const d=new Date(r.created_at);
-    const key=[
-      d.getFullYear(),
-      String(d.getMonth()+1).padStart(2,"0"),
-      String(d.getDate()).padStart(2,"0")
-    ].join("-");
-
-    if(!groups[key])groups[key]=[];
-    groups[key].push(r);
-  });
-
-  const keys=Object.keys(groups).sort((a,b)=>
-    sort==="old"?a.localeCompare(b):b.localeCompare(a)
-  );
-
-  $("resultsList").innerHTML=
-    '<div style="display:flex;flex-direction:column;gap:9px;">'+
-    keys.map((key,index)=>{
-      const dayRows=groups[key];
-      const parts=key.split("-");
-      const dateLabel=new Date(
-        Number(parts[0]),
-        Number(parts[1])-1,
-        Number(parts[2])
-      ).toLocaleDateString("en-US",{
-        weekday:"long",
-        day:"numeric",
-        month:"long",
-        year:"numeric"
-      });
-
-      const total=dayRows.reduce((s,r)=>s+(Number(r.total)||0),0);
-      const score=dayRows.reduce((s,r)=>s+(Number(r.score)||0),0);
-      const average=total?Math.round(score/total*100):0;
-
-      return `
-        <details style="background:#fff;border:1px solid #e6ece8;border-radius:13px;overflow:hidden;" ${index===0?"open":""}>
-          <summary style="display:flex;align-items:center;gap:9px;padding:12px 14px;cursor:pointer;list-style:none;">
-            <span style="font-size:17px;">📁</span>
-            <span style="flex:1;font-size:13px;font-weight:700;color:#24384b;text-transform:capitalize;">${safe(dateLabel)}</span>
-            <span style="font-size:11px;color:#718092;white-space:nowrap;">${dayRows.length} · ${average}%</span>
-            <span style="font-size:16px;color:#82918c;">⌄</span>
-          </summary>
-
-          <div style="padding:0 9px 9px;display:flex;flex-direction:column;gap:6px;">
-            ${dayRows.map(r=>{
-              const studentName=r.student?.full_name||r.student?.email||"Unknown";
-const student=safe(studentName);
-              const lesson=safe(r.lesson?.title||"Unknown");
-              const exercise=safe((r.exercise||"").replace(/_/g," "));
-              const points=Number(r.score)||0;
-              const maximum=Number(r.total)||0;
-              const time=new Date(r.created_at).toLocaleTimeString("en-GB",{
-                hour:"2-digit",
-                minute:"2-digit"
-              });
-
-              return `
-                <article style="display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:3px 10px;padding:9px 11px;background:#f7f9f7;border:1px solid #edf1ee;border-radius:10px;">
-                  <div style="min-width:0;">
-                    <button onclick="openStudentProfile('${safe(r.student_id)}')" style="border:0;background:transparent;padding:0;text-align:left;font:inherit;font-size:13px;font-weight:700;color:#36536d;text-decoration:underline;cursor:pointer;">${student}</button>
-                    <div style="font-size:11px;color:#718092;margin-top:2px;overflow-wrap:anywhere;">${lesson} · ${exercise}</div>
-                  </div>
-                  <div style="font-size:16px;font-weight:700;color:#36536d;white-space:nowrap;">${points}<span style="font-size:11px;color:#718092;font-weight:500;">/${maximum}</span></div>
-                  <div style="grid-column:1/-1;font-size:10px;color:#89968f;">${time}</div>
-                </article>
-              `;
-            }).join("")}
-          </div>
-        </details>
-      `;
-    }).join("")+
-    '</div>';
-}
- function openStudentProfile(studentId){
-
- const history=allResults
-  .filter(r=>String(r.student_id)===String(studentId))
-  .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-
- if(!history.length)return;
-
- const student=history[0].student;
-
- const total=history.reduce(
-  (sum,r)=>sum+(Number(r.total)||0),0
- );
-
- const score=history.reduce(
-  (sum,r)=>sum+(Number(r.score)||0),0
- );
-
- const uniqueLessons=new Set(
-  history.map(r=>r.lesson_id).filter(Boolean)
- );
-
- $("profileStudentName").textContent=
-  student?.full_name||"Student";
-
- $("profileStudentEmail").textContent=
-  student?.email||"";
-
- $("profileAttempts").textContent=history.length;
-
- $("profileAverage").textContent=
-  total?Math.round(score/total*100)+"%":"—";
-
- $("profileLessons").textContent=uniqueLessons.size;
-
- $("profileHistory").innerHTML=history.map(r=>{
-
-  const date=new Date(r.created_at);
-
-  const dateText=date.toLocaleDateString("en-US",{
-   weekday:"short",
-   month:"short",
-   day:"numeric",
-   year:"numeric"
-  });
-
-  const timeText=date.toLocaleTimeString("en-GB",{
-   hour:"2-digit",
-   minute:"2-digit"
-  });
-
-  return `
-   <article style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;background:#f7f9f7;border:1px solid #edf1ee;border-radius:11px;margin:8px 0;">
-
-    <div style="min-width:0;">
-     <b style="font-size:13px;">
-      ${safe(r.lesson?.title||"Unknown lesson")}
-     </b>
-
-     <div class="muted small">
-      ${safe((r.exercise||"").replace(/_/g," "))}
-      · ${dateText} · ${timeText}
-     </div>
-    </div>
-
-    <strong style="white-space:nowrap;color:#36536d;">
-     ${Number(r.score)||0}/${Number(r.total)||0}
-    </strong>
-
-   </article>
-  `;
-
- }).join("");
-
- $("resultsList").classList.add("hidden");
- $("studentProfile").classList.remove("hidden");
-
- $("studentProfile").scrollIntoView({
-  behavior:"smooth",
-  block:"start"
- });
-}
-
-
-function closeStudentProfile(){
-
- $("studentProfile").classList.add("hidden");
-
- $("resultsList").classList.remove("hidden");
-
-}
-
-
-db.auth.getSession().then(({data})=>{
- if(data.session)loadApp(data.session.user);
-});
+ const level=$("gLevel").value,topic=$("gTopic").value.trim(),title=$("gTitle").value.trim(),wordsText=$("gWords").value,n=pw(wordsText).length;
+ if(!topic)return msg("gm","Please write what the text is about.");if(n<3)return msg("gm","Please enter at least 3 words with translations.");if(n>30)return msg("gm","Please use no more than 30 words.");
+ $("gBtn").disabled=true;msg("gm","AI is writing your story. Please wait about a minute...");
+ try{const{data,error}=await db.functions.invoke("generate-story",{body:{level,topic,title,wordsText}});
+  if(error){let d=error.message||"Request failed.";try{const b=await error.context.json();if(b.error)d=b.error}catch(e){}throw new Error(d)}
+  if(!data||!data.story||!Array.isArray(data.gaps))throw new Error(data?.error||"Incomplete AI response.");
+  $("lTitle").value=title||data.title||"New story";$("lLevel").value=level;$("lTopic").value=topic;$("lStory").value=data.story;
+  $("lWords").value=(data.vocabulary||[]).map(v=>v.word+" = "+v.translation).join("\n");$("lGaps").value=data.gaps.map(g=>g.sentence+" | "+g.answer).join("\n");
+  msg("gm",`Ready! Words: ${data.story.trim().split(/\s+/).length} · Exercises: ${data.gaps.length}. Check the lesson below and press Save.`);$("lTitle").scrollIntoView({behavior:"smooth",block:"center"})
+ }catch(e){msg("gm","Generation failed: "+e.message)}finally{$("gBtn").disabled=false}}
+
+async function saveLesson(){
+ const id=$("lId").value,t=$("lTitle").value.trim(),st=$("lStory").value.trim(),gaps=pg($("lGaps").value);
+ if(!t||!st)return msg("tm","Please enter a lesson title and reading text.");
+ if(gaps.length<10&&!confirm("Only "+gaps.length+" exercises (minimum 10 recommended). Save anyway?"))return;
+ const les={title:t,name:t,level:$("lLevel").value,topic:$("lTopic").value.trim(),group_name:$("lGroup").value.trim()||null,story:st,words:pw($("lWords").value),gap_sentences:gaps,published:$("lPub").checked};
+ $("sBtn").disabled=true;msg("tm","Saving...");
+ const r=id?await db.from("lessons").update(les).eq("id",id):await db.from("lessons").insert({...les,created_by:S.user.id});
+ $("sBtn").disabled=false;if(r.error)return msg("tm",r.error.message);
+ await loadLessons();go("create");msg("tm",id?"Lesson updated!":"Lesson created!")}
+function resetForm(){S.editId=null;render()}
+function editLesson(id){const l=S.lessons.find(x=>String(x.id)===String(id));if(!l)return;go("create");
+ $("lId").value=l.id;$("fh").textContent="Edit lesson";$("sBtn").textContent="Save changes";$("cBtn").classList.remove("hidden");
+ $("lTitle").value=l.title||"";$("lLevel").value=l.level||"A1";$("lTopic").value=l.topic||"";$("lGroup").value=l.group_name||"";$("lStory").value=l.story||"";
+ $("lWords").value=(l.words||[]).map(w=>w.word+" = "+w.translation).join("\n");$("lGaps").value=(l.gap_sentences||[]).map(g=>g.sentence+" | "+g.answer).join("\n");$("lPub").checked=!!l.published;
+ $("fh").scrollIntoView({behavior:"smooth"})}
+async function delLesson(id){const l=S.lessons.find(x=>String(x.id)===String(id));if(!l||!confirm('Delete lesson "'+l.title+'"? This cannot be undone.'))return;
+ const{error}=await db.from("lessons").delete().eq("id",id);if(error)return alert("Could not delete: "+error.message);await loadLessons();go("create")}
+
+function monthRows(){const q=S.sq.trim().toLowerCase();return S.results.filter(r=>(!S.month||mk(r.created_at)===S.month)&&(!q||nameOf(r.student_id).toLowerCase().includes(q)||((person(r.student_id)||{}).email||"").toLowerCase().includes(q)))}
+function resBody(){
+ const R=monthRows();if(!R.length)return '<div class="empty">No results for this month / search.</div>';
+ const by={};R.forEach(r=>{(by[r.student_id]=by[r.student_id]||[]).push(r)});
+ const stu=Object.keys(by).sort((a,b)=>nameOf(a).localeCompare(nameOf(b))).map(id=>{const a=by[id];return `<div class="sc" onclick="go('student','${id}')"><div><b>${safe(nameOf(id))}</b><div class="muted small">Attempts: ${a.length} · Mistakes: ${sum(a,"total")-sum(a,"score")}</div></div><div class="num">${pct(sum(a,"score"),sum(a,"total"))}%</div></div>`}).join("");
+ DAYS={};R.forEach(r=>{(DAYS[dk(r.created_at)]=DAYS[dk(r.created_at)]||[]).push(r)});
+ const fold=Object.keys(DAYS).sort().reverse().map((k,i)=>{const a=DAYS[k],p=k.split("-"),lab=new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString("en-US",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  return `<details class="fold" ${i?"":"open"}><summary><span>📁 ${lab}</span><span class="muted small">${new Set(a.map(r=>r.student_id)).size} students · ${a.length} attempts · ${pct(sum(a,"score"),sum(a,"total"))}%</span></summary>
+  ${a.map(r=>{const d=new Date(r.created_at);return `<div class="fr"><div><a onclick="go('student','${r.student_id}')">${safe(nameOf(r.student_id))}</a><div class="muted small">${safe(ltitle(r.lesson_id))} · ${d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</div></div><div class="row" style="margin:0"><span class="num" style="font-size:18px">${r.score}/${r.total}</span><button class="ic" onclick="delResults(['${r.id}'])">🗑</button></div></div>`}).join("")}
+  <div style="padding:6px 8px 10px"><button class="btn danger sm" onclick="clearDay('${k}')">🗑 Clear this folder</button></div></details>`}).join("");
+ return `${statCards(R)}<h3>Students</h3>${stu}<h3 style="margin-top:16px">Practice by day</h3>${fold}`}
+function vResults(){return `<div class="card"><span class="eyebrow">Learning analytics</span><h2>Student results</h2><p class="muted">Progress for the selected month, grouped by days.</p>
+<div class="g2"><input type="month" value="${S.month}" onchange="S.month=this.value;$('rb').innerHTML=resBody()"><input value="${safe(S.sq)}" placeholder="🔍 Search student by name..." oninput="S.sq=this.value;$('rb').innerHTML=resBody()"></div><div id="rb" style="margin-top:12px">${resBody()}</div></div>`}
+function vStudent(){const id=S.pid,R=S.results.filter(r=>r.student_id===id),p=person(id)||{};
+ return `<button class="btn ghost sm" onclick="goResults()">← Back to results</button><div class="card" style="margin-top:10px"><span class="eyebrow">Student profile</span><h2>${safe(nameOf(id))}</h2><p class="muted small">${safe(p.email||"")}</p>${statCards(R)}<h3>Completed texts</h3>${lessonSummary(R)}<h3 style="margin-top:16px">Learning history</h3>${history(R,true)}</div>`}
+
+async function delResults(ids){if(!ids.length||!confirm("Delete "+ids.length+" result(s)? This cannot be undone."))return;
+ const{data,error}=await db.from("results").delete().in("id",ids).select("id");
+ if(error)return alert("Could not delete: "+error.message);if(!data||!data.length)return alert("Nothing was deleted. Please run the SQL file in Supabase (delete permission for the teacher).");
+ await loadAll();render()}
+function clearDay(k){const a=(DAYS[k]||[]);delResults(a.map(r=>r.id))}
+
+db.auth.getSession().then(({data})=>{if(data.session)loadApp(data.session.user)});
 </script>
 </body>
 </html>
